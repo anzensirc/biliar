@@ -1,0 +1,40 @@
+{
+  "lang": {
+    "id": "Indonesian",
+    "en": "English"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "not-have-account": "Don't have an account yet?",
+    "have-account": "Already have an account",
+    "message-login": "Enter your email and password to log in to your account",
+    "message-register": "Create a new account to access all features",
+    "message-other-login": "Or continue with",
+    "label-name": {
+      "name": "Name",
+      "place-holder": "Full Name"
+    },
+    "label-email": {
+      "name": "Email",
+      "place-holder": "name@example.com"
+    },
+    "label-password": {
+      "name": "Password",
+      "place-holder": ""
+    },
+    "label-comfirm-password": {
+      "name": "Confirm Password",
+      "place-holder": ""
+    }
+  },
+  "landing": {
+    "hero": {
+      "h1": "Modern Templates for Your Next.js Frontend",
+      "p": "Start your Next.js project with a modern template equipped with elegant UI components and high performance.",
+      "button-start-now": "Start Now",
+      "button-learn": "Learn More"
+    }
+  }
+}

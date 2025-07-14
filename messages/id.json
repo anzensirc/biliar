@@ -1,0 +1,40 @@
+{
+  "lang": {
+    "id": "Bahasa Indonesia",
+    "en": "Inggris"
+  },
+  "auth": {
+    "login": "Masuk",
+    "logout": "Keluar",
+    "register": "Daftar",
+    "not-have-account": "Belum punya akun?",
+    "have-account": "Sudah punya akun",
+    "message-login": "Masukkan email dan password Anda untuk masuk ke akun Anda",
+    "message-register": "Buat akun baru untuk mengakses semua fitur",
+    "message-other-login": "Atau lanjutkan dengan",
+    "label-name": {
+      "name": "Nama",
+      "place-holder": "Nama Lengkap"
+    },
+    "label-email": {
+      "name": "Email",
+      "place-holder": "nama@contoh.com"
+    },
+    "label-password": {
+      "name": "Password",
+      "place-holder": ""
+    },
+    "label-comfirm-password": {
+      "name": "Konfirmasi Password",
+      "place-holder": ""
+    }
+  },
+  "landing": {
+    "hero": {
+      "h1": "Template Modern untuk Frontend Next.js Anda",
+      "p": "Mulai proyek Next.js Anda dengan template modern yang dilengkapi dengan komponen UI yang elegan dan performa tinggi.",
+      "button-start-now": "Mulai Sekarang",
+      "button-learn": "Pelajari Lebih Lanjut"
+    }
+  }
+}

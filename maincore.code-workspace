@@ -1,0 +1,23 @@
+{
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "i18n-ally.localesPaths": ["messages", "src/i18n"],
+    "i18n-ally.enabledFrameworks": ["next-intl"],
+    "i18n-ally.defaultLocale": "id",
+    "i18n-ally.sortKeys": true,
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.pathMatcher": "**/messages/*.{json,json5}",
+    "i18n-ally.displayLanguage": "id",
+    "i18n-ally.sourceLanguage": "id",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+    },
+    "editor.formatOnSave": true,
+    "eslint.validate": ["typescript", "typescriptreact"],
+    "prettier.enable": true,
+  },
+}
