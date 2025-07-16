@@ -8,96 +8,66 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import { format } from "date-fns";
+import { BookingResponse } from "./interface";
 
-export const bookingData = [
+export const bookingColumns = (
+  currentPage: number,
+  perPage: number
+): ColumnDef<BookingResponse>[] => [
   {
-    id: 1,
-    namapemesan: "John Doe",
-    nohp: "08123456789",
-    tanggalbooking: "2023-10-01",
-    tanggaltransaksi: "2023-10-02",
-    totalbayar: 150000,
-    status: "Lunas",
-    meja: "Meja 1",
-    harga: 150000,
-    tipe: "Meja",
-    deskripsi: "Meja untuk 4 orang",
+    id: "no",
+    header: "No",
+    cell: ({ row }) => {
+      const number = (currentPage - 1) * perPage + row.index + 1;
+      return <div>{number}</div>;
+    },
   },
   {
-    id: 3,
-    namapemesan: "Azizi",
-    nohp: "0812345219",
-    tanggalbooking: "2023-10-11",
-    tanggaltransaksi: "2023-10-12",
-    totalbayar: 150000,
-    status: "Belum Lunas",
-    meja: "Meja 2",
-    harga: 150000,
-    tipe: "Meja",
-    deskripsi: "Meja untuk 4 orang",
-  },
-];
-
-export const bookingColumns: ColumnDef<BookingResponse>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => row.original.id,
-  },
-  {
-    accessorKey: "namapemesan",
-    header: "Nama Pemesan",
-    cell: ({ row }) => row.original.namapemesan,
-  },
-  {
-    accessorKey: "nohp",
-    header: "No Telepon",
-    cell: ({ row }) => row.original.nohp,
-  },
-  {
-    accessorKey: "tanggalbooking",
-    header: "Tanggal Booking",
-    cell: ({ row }) => row.original.tanggalbooking,
-  },
-  {
-    accessorKey: "tanggaltransaksi",
-    header: "Tanggal Transaksi",
-    cell: ({ row }) => row.original.tanggaltransaksi,
-  },
-  {
-    accessorKey: "status",
-    header: "Status Booking",
-    cell: ({ row }) => row.original.status,
+    accessorKey: "KodeBooking",
+    header: "Kode Booking",
+    cell: ({ row }) => row.original.KodeBooking,
   },
   {
     accessorKey: "meja",
     header: "Meja",
-    cell: ({ row }) => row.original.meja,
+    cell: ({ row }) => row.original.meja.NamaMeja,
   },
   {
-    accessorKey: "harga",
-    header: "Harga",
-    cell: ({ row }) =>
-      `Rp${Number(row.original.harga).toLocaleString("id-ID")}`,
+    accessorKey: "Tanggal",
+    header: "Tanggal Booking",
+    cell: ({ row }) => `${row.original.Tanggal.split("T")[0]}`
   },
   {
-    accessorKey: "totalbayar",
+    accessorKey: "Jam Main",
+    header: "Jam Main",
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-wrap gap-2 items-center justify-center">
+          {row.original.meja.JamBooking.map((item,i)=>(
+            <span key={i} className="p-2 rounded-md bg-gray-50">{item.JadwalMeja.StartTime}-{item.JadwalMeja.EndTime}</span>
+          ))}
+        </div>
+      )
+    }
+  },
+  {
+    accessorKey: "durasiJam",
+    header: "Durasi Jam",
+    cell: ({ row }) => row.original.durasiJam,
+  },
+  {
+    accessorKey: "TotalBayar",
     header: "Total Bayar",
-    cell: ({ row }) =>
-      `Rp${Number(row.original.totalbayar).toLocaleString("id-ID")}`,
+    cell: ({ row }) => row.original.TotalBayar ??`Rp. ${(Number(row.original.Harga) * Number(row.original.durasiJam)).toLocaleString("id-ID")}`,
   },
   {
-    accessorKey: "tipe",
-    header: "Tipe",
-    cell: ({ row }) => row.original.tipe,
+    accessorKey: "BuktiPembayaran",
+    header: "Bukti Pembayaran",
+    cell: ({ row }) => row.original.BuktiPembayaran,
   },
   {
-    accessorKey: "deskripsi",
-    header: "Deskripsi",
-    cell: ({ row }) => row.original.deskripsi,
-  },
-  {
-    accessorKey: "action",
+    accessorKey: "aksi",
     header: "Aksi",
     cell: ({ row }) => (
       <DropdownMenu>
@@ -105,12 +75,12 @@ export const bookingColumns: ColumnDef<BookingResponse>[] = [
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/tables/admin/edit/${row.original.id}`}>
+          <Link href={`/kelola-meja/edit/${row.original.id}`}>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`infrastruktur/${row.original.id}/delete`}
-            queryKey="useGetSarana"
+            endpoint={`master/meja/delete/${row.original.id}`}
+            queryKey="useGetMeja"
           />
         </DropdownMenuContent>
       </DropdownMenu>

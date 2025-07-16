@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 type Table = {
   id: number;
@@ -12,13 +13,30 @@ type Table = {
   images: string[];
 };
 
+const mejaKecilDescription = `
+🎱 Meja Biliar Kecil
+Meja biliar kecil cocok untuk pemain pemula, keluarga, atau area dengan ruang terbatas.
+Ukuran umumnya 6-7 feet (1.8–2.1 meter) dengan rangka kayu solid atau MDF berkualitas.
+Permukaan dilapisi kain felt halus, bumper karet responsif, pocket jaring atau plastik.
+Kelebihan: hemat tempat, harga terjangkau.
+Kekurangan: tidak cocok untuk turnamen profesional.
+`;
+
+const mejaBesarDescription = `
+🎱 Meja Biliar Besar
+Meja biliar besar berstandar turnamen dengan ukuran 8-9 feet (2.4–2.7 meter).
+Menggunakan rangka kayu keras premium dan permukaan slate stone untuk presisi optimal.
+Dilengkapi cushion karet profesional, pocket kulit standar regulasi, dan aksesori lengkap.
+Kelebihan: akurasi tinggi, cocok untuk kompetisi.
+Kekurangan: butuh ruang besar, harga lebih tinggi.
+`;
+
 export default function Highlight() {
   const tables: Table[] = [
     {
       id: 1,
       name: "Meja 1",
-      description:
-        "Meja Kecil cocok buat kamu yang mau main biliar santai bareng teman-teman terdekat...",
+      description: mejaBesarDescription.replace(/\n/g, ""),
       category: "Meja Kecil",
       images: [
         "/images/mejakecil1.jpeg",
@@ -29,7 +47,7 @@ export default function Highlight() {
     {
       id: 2,
       name: "Meja 2",
-      description: "Meja Besar hadir buat kamu yang suka tantangan serius!...",
+      description: mejaBesarDescription.replace(/\n/g, ""),
       category: "Meja Besar",
       images: [
         "/images/mejabesar1.jpeg",
@@ -68,7 +86,7 @@ function TableCard({ table }: { table: Table }) {
   };
 
   return (
-    <div className="bg-gray-100 rounded-lg shadow p-4 flex flex-col items-center relative">
+    <div className="bg-blue-200 rounded-lg shadow p-4 flex flex-col items-center relative">
       {/* Slider */}
       <div className="w-full h-5 mb-4 overflow-hidden rounded">table.name</div>
       <div className="relative w-full h-80 mb-4 overflow-hidden rounded">
@@ -83,7 +101,7 @@ function TableCard({ table }: { table: Table }) {
           onClick={prevImage}
           className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow"
         >
-          &#8592;
+          <ChevronLeft className="w-4 h-10" />
         </button>
         <div className="w-full h-5 mb-4 overflow-hidden rounded">
           Meja Kecil
@@ -92,7 +110,7 @@ function TableCard({ table }: { table: Table }) {
           onClick={nextImage}
           className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow"
         >
-          &#8594;
+          <ChevronRight className="w-4 h-10" /> {/* Sesuaikan ukuran */}
         </button>
       </div>
 
@@ -104,9 +122,9 @@ function TableCard({ table }: { table: Table }) {
         Lihat Jadwal
       </Link>
 
-      <div className="w-full bg-gray-200 p-4 rounded">
+      <div className="w-full bg-white p-4 rounded">
         <h3 className="text-lg font-semibold mb-2">Deskripsi:</h3>
-        <p className="text-gray-700">{table.description}</p>
+        <p className="text-black-700">{table.description}</p>
       </div>
     </div>
   );

@@ -1,6 +1,9 @@
 "use client";
 
-import { useMeja } from "@/components/parts/admin/kelola-meja/api";
+import {
+  useGetMejaId,
+  useMeja,
+} from "@/components/parts/admin/kelola-meja/api";
 import {
   MejaForm,
   MejaFormSchema,
@@ -12,12 +15,15 @@ import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const CreateProductPage = () => {
   const router = useRouter();
-  const createMejaMutation = useMeja("POST");
+  // edit
+  const { id } = useParams();
+  const createMejaMutation = useMeja("PUT", Number(id));
   const form = useForm<MejaForm>({
     resolver: zodResolver(MejaFormSchema),
     defaultValues: {
@@ -39,6 +45,22 @@ const CreateProductPage = () => {
     });
   };
 
+  //
+  const { data } = useGetMejaId(Number(id));
+
+  const result = data?.data;
+
+  useEffect(() => {
+  if (result) {
+    form.setValue("nama", result.NamaMeja || "");
+    form.setValue("noMeja", result.NoMeja || "");
+    form.setValue("TipeMeja", result.TipeMeja || "");
+    form.setValue("harga", result.Harga || "");
+    form.setValue("deskripsi", result.Deskripsi || "");
+    form.setValue("foto", result.Foto || "");
+  }
+}, [result, form]);
+
   return (
     <div>
       <BreadcrumbSetItem
@@ -48,14 +70,14 @@ const CreateProductPage = () => {
             href: "/kelola-meja",
           },
           {
-            title: "Tambah Meja",
+            title: "Edit Meja",
           },
         ]}
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="">
-            <h1 className="text-2xl font-bold mb-4">Tambah Produk</h1>
+            <h1 className="text-2xl font-bold mb-4">Edit Produk</h1>
             <div className="space-y-3 mt-5">
               <CustomFormInput<MejaForm>
                 name="nama"
@@ -95,7 +117,7 @@ const CreateProductPage = () => {
             </div>
             <div className="flex justify-center mt-6 gap-3">
               <Button type="submit" className="rounded-full w-[200px]">
-                Tambah
+                Edit
               </Button>
             </div>
           </div>

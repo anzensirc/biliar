@@ -5,6 +5,7 @@ import {
   ClosedForm,
   ClosedFormSchema,
 } from "@/components/parts/admin/kelola-tutup/validation";
+import { CustomFormFileInput } from "@/components/shared/forms/customFormFileInput";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
 import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
@@ -14,23 +15,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const CreateTutupPage = () => {
+const CreateProductPage = () => {
   const router = useRouter();
   const createTutupMutation = useTutup("POST");
   const form = useForm<ClosedForm>({
     resolver: zodResolver(ClosedFormSchema),
     defaultValues: {
-      tanggal_mulai: "",
-      tanggal_selesai: "",
-      keterangan: "",
+      Deskripsi: "",
+      startdate: "",
+      enddate: "",
     },
   });
 
   const onSubmit = (data: ClosedForm) => {
-    console.log("data", data);
+    // console.log("data", data);
     createTutupMutation.mutate(data, {
       onSuccess: (data) => {
-        router.push("/data-master/category-business");
+        router.push("/kelola-tutup");
       },
     });
   };
@@ -44,7 +45,7 @@ const CreateTutupPage = () => {
             href: "/kelola-tutup",
           },
           {
-            title: "Tambah",
+            title: "Tambah Tutup",
           },
         ]}
       />
@@ -54,22 +55,19 @@ const CreateTutupPage = () => {
             <h1 className="text-2xl font-bold mb-4">Tambah Produk</h1>
             <div className="space-y-3 mt-5">
               <CustomFormInput<ClosedForm>
-                name="tanggal_mulai"
-                label="Tanggal Mulai"
-                placeholder="Masukkan Tanggal Mulai"
-                type="date"
+                name="Deskripsi"
+                label="Deskripsi Tutup"
+                placeholder="Masukkan Deskripsi Tutup"
               />
               <CustomFormInput<ClosedForm>
-                name="tanggal_selesai"
-                label="Tanggal Selesai"
-                placeholder="Masukkan Tanggal Selesai"
-                type="date"
+                name="startdate"
+                label="Tanggal Mulai Tutup"
+                placeholder="Masukkan Tanggal Mulai Tutup"
               />
               <CustomFormInput<ClosedForm>
-                name="keterangan"
-                label="Keterangan"
-                placeholder="Masukkan Keterangan Tutup Toko"
-                type="number"
+                name="enddate"
+                label="Tanggal Berakhir Tutup"
+                placeholder="Masukkan Tanggal Berakhir Tutup"
               />
             </div>
             <div className="flex justify-center mt-6 gap-3">
@@ -84,4 +82,4 @@ const CreateTutupPage = () => {
   );
 };
 
-export default CreateTutupPage;
+export default CreateProductPage;

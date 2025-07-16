@@ -8,46 +8,45 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import Image from "next/image";
 
-export const bannerData = [
+export const bannerColumns = (
+  currentPage: number,
+  perPage: number
+): ColumnDef<BannerResponse>[] => [
   {
-    id: 1,
-    meja: "Produk A",
-    harga: 120102,
-    tipe: "sdadasnd",
-    deskripsi: "fnaihfaofja",
-  },
-];
-
-export const bannerColumns: ColumnDef<BannerResponse>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => row.original.id,
+    id: "no",
+    header: "No",
+    cell: ({ row }) => {
+      const number = (currentPage - 1) * perPage + row.index + 1;
+      return <div>{number}</div>;
+    },
   },
   {
-    accessorKey: "meja",
-    header: "Meja",
-    cell: ({ row }) => row.original.meja,
+    accessorKey: "Foto",
+    header: "Foto",
+    cell: ({ row }) => (
+      <Image
+        src={row.original.Foto}
+        alt="Foto"
+        height={500}
+        width={500}
+        className="w-fit h-20 object-cover rounded"
+      />
+    ),
   },
   {
-    accessorKey: "harga",
-    header: "Harga",
-    cell: ({ row }) =>
-      `Rp${Number(row.original.harga).toLocaleString("id-ID")}`,
+    accessorKey: "Judul",
+    header: "Judul",
+    cell: ({ row }) => row.original.Judul,
   },
   {
-    accessorKey: "tipe",
-    header: "Tipe",
-    cell: ({ row }) => row.original.tipe,
+    accessorKey: "NamaFoto",
+    header: "Nama Foto",
+    cell: ({ row }) => row.original.NamaFoto,
   },
   {
-    accessorKey: "deskripsi",
-    header: "Deskripsi",
-    cell: ({ row }) => row.original.deskripsi,
-  },
-  {
-    accessorKey: "action",
+    accessorKey: "aksi",
     header: "Aksi",
     cell: ({ row }) => (
       <DropdownMenu>
@@ -55,12 +54,12 @@ export const bannerColumns: ColumnDef<BannerResponse>[] = [
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/tables/admin/edit/${row.original.id}`}>
+          <Link href={`/kelola-banner/edit/${row.original.id}`}>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`infrastruktur/${row.original.id}/delete`}
-            queryKey="useGetSarana"
+            endpoint={`master/banner/${row.original.id}`}
+            queryKey="useGetBanner"
           />
         </DropdownMenuContent>
       </DropdownMenu>

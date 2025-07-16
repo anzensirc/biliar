@@ -1,7 +1,10 @@
 interface BannerResponse {
   id: number;
-  meja: string;
-  harga: number;
-  tipe: string;
-  deskripsi: string;
+  Foto: string;
+  NamaFoto: string;
+  Judul: string;
+  IsActive: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
 }

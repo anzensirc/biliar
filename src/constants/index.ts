@@ -10,6 +10,8 @@ import {
   BookOpenCheck,
   ScrollText,
   Target,
+  QrCode,
+  Settings2,
 } from "lucide-react";
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const REGION_URL = process.env.NEXT_PUBLIC_API_REGION;
@@ -97,6 +99,19 @@ export const getNavData = (): navDateType => {
         icon: ScrollText,
         roles: ["admin", "superadmin", "user"],
       },
+      {
+        title: "Setting Web",
+        url: "/Setting Web",
+        icon: Settings2,
+        roles: ["admin", "superadmin"],
+      },
+      {
+        title: "Kelola Qris",
+        url: "/kelola-qris",
+        icon: QrCode,
+        roles: ["admin", "superadmin"],
+      },
+      
     ],
   };
 };

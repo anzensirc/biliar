@@ -8,6 +8,7 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import Image from "next/image";
 
 export const mejaColumns = (
   currentPage: number,
@@ -36,6 +37,20 @@ export const mejaColumns = (
     accessorKey: "TipeMeja",
     header: "Tipe",
     cell: ({ row }) => row.original.TipeMeja,
+  },
+  {
+    accessorKey: "Foto",
+    header: "Foto",
+    cell: ({ row }) =>
+    (
+      <Image
+        src={row.original.Foto}
+        alt="Foto"
+        height={500}
+        width={300}
+         className="w-fit h-500 object-cover rounded"
+      />
+    )
   },
   {
     accessorKey: "Deskripsi",

@@ -1,4 +1,4 @@
-import { ApiResponse, DataObject } from "@/types";
+import { ApiResponse, DataObject, DataPaginate } from "@/types";
 import { BannerFormPayload } from "./validation";
 import { fetcher, sendData } from "@/services/api/fetcher";
 import { useFormMutation } from "@/hooks/useFormMutation";
@@ -7,36 +7,34 @@ import { useQuery } from "@tanstack/react-query";
 // get
 const getBanner = async (
   query?: string
-): Promise<ApiResponse<BannerResponse[]>> => {
-  return await fetcher(
-    query ? `infrastruktur/get?${query}` : `infrastruktur/get`
-  );
+): Promise<ApiResponse<DataPaginate<BannerResponse>>> => {
+  return await fetcher(query ? `master/banner?${query}` : `master/banner`);
 };
 
-// export const useGetBanner = (query?: string) => {
-//   return useQuery<ApiResponse<BannerResponse[]>, Error>(
-//     ["useGetBanner", query],
-//     () => getBanner(query),
-//     {
-//       keepPreviousData: true,
-//       refetchIntervalInBackground: true,
-//     }
-//   );
-// };
+export const useGetBanner = (query?: string) => {
+  return useQuery<ApiResponse<DataPaginate<BannerResponse>>, Error>(
+    ["useGetBanner", query],
+    () => getBanner(query),
+    {
+      keepPreviousData: true,
+      refetchIntervalInBackground: true,
+    }
+  );
+};
 
 // get by id
 export const getBannerId = async (
   id: number
 ): Promise<ApiResponse<DataObject<BannerResponse>>> => {
-  return await fetcher(`infrastruktur/${id}/get`);
+  return await fetcher(`master/banner/${id}`);
 };
 
-// export const useGetBannerId = (id: number) => {
-//   return useQuery<ApiResponse<DataObject<BannerResponse>>, Error>(
-//     ["useGetBannerId", id],
-//     () => getBannerId(id)
-//   );
-// };
+export const useGetBannerId = (id: number) => {
+  return useQuery<ApiResponse<DataObject<BannerResponse>>, Error>(
+    ["useGetBannerId", id],
+    () => getBannerId(id)
+  );
+};
 
 // post
 export const useBanner = (method: "POST" | "PUT" = "POST", id?: number) => {
@@ -49,11 +47,11 @@ export const useBanner = (method: "POST" | "PUT" = "POST", id?: number) => {
       data
     ): Promise<ApiResponse<DataObject<BannerFormPayload>>> => {
       const endpoint = id
-        ? `infrastruktur/${id}/update`
-        : "infrastruktur/create";
+        ? `master/banner/update/${id}`
+        : "master/banner/create";
       const delay = new Promise((resolve) => setTimeout(resolve, 2000));
       const response: ApiResponse<DataObject<BannerFormPayload>> =
-        await sendData(endpoint, data, method);
+        await sendData(endpoint, data, method, true);
       await delay;
       return response;
     },

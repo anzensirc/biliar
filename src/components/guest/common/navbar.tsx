@@ -3,11 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Menu } from "lucide-react";
-import CartSidebar from "@/components/modal/cartSidebar";
+import { Menu } from "lucide-react";
 
 export default function Navbar() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -39,7 +37,7 @@ export default function Navbar() {
         </button>
 
         {/* Menu - desktop */}
-        <div className="hidden md:flex gap-6 items-center">
+        <div className="hidden md:flex gap-6 items-center justify-end">
           <Link
             href="/"
             className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
@@ -53,25 +51,23 @@ export default function Navbar() {
             Booking
           </Link>
           <Link
-            href="/tentang"
+            href="/cari-booking"
             className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
           >
-            Tentang
+            Cari Booking
           </Link>
-        </div>
-        <div className="hidden md:flex gap-6 items-right">
           <Link
             href="/upload-bukti"
             className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
           >
             Upload Bukti
           </Link>
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="transition-transform duration-200 hover:scale-125"
+          <Link
+            href="/tentang"
+            className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
           >
-            <ShoppingCart className="w-6 h-6 text-white" />
-          </button>
+            Tentang
+          </Link>
         </div>
       </nav>
 
@@ -93,33 +89,28 @@ export default function Navbar() {
             Booking
           </Link>
           <Link
-            href="/tentang"
-            onClick={() => setIsMenuOpen(false)}
-            className="text-white"
-          >
-            Tentang
-          </Link>
-          <Link
             href="/upload-bukti"
             onClick={() => setIsMenuOpen(false)}
             className="text-white"
           >
             Upload Bukti
           </Link>
-          <button
-            onClick={() => {
-              setIsCartOpen(true);
-              setIsMenuOpen(false);
-            }}
-            className="flex items-center gap-2 text-white"
+          <Link
+            href="/cari-booking"
+            onClick={() => setIsMenuOpen(false)}
+            className="text-white"
           >
-            <ShoppingCart className="w-5 h-5" /> Cart
-          </button>
+            Cari Booking
+          </Link>
+          <Link
+            href="/tentang"
+            onClick={() => setIsMenuOpen(false)}
+            className="text-white"
+          >
+            Tentang
+          </Link>
         </div>
       )}
-
-      {/* Komponen Cart Sidebar */}
-      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }
