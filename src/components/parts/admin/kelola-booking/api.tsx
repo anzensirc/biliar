@@ -27,7 +27,7 @@ export const useGetBooking = (query?: string) => {
 export const getBookingId = async (
   id: number
 ): Promise<ApiResponse<DataObject<BookingResponse>>> => {
-  return await fetcher(`master/meja/${id}`);
+  return await fetcher(`master/booking/${id}`);
 };
 
 export const useGetBookingId = (id: number) => {

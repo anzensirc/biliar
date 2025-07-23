@@ -73,19 +73,15 @@ export default function HighlightDashboard() {
     }
   };
 
-  // ✅ Ambil data mentah 12 bulan
   const { data, isLoading } = useGetDashboard();
   const allData = data?.data || [];
 
-  // ✅ Filter data di FE
   const mappedBulan = mapBulanFilter(selectedFilter);
 
   const filteredData =
     selectedFilter === "Semua"
       ? allData
       : allData.filter((item) => item.bulan === mappedBulan);
-
-  // ✅ Total dan chart pakai hasil filter
   const totalBooking = filteredData.reduce(
     (acc, item) => acc + item.totalBooking,
     0
@@ -95,8 +91,7 @@ export default function HighlightDashboard() {
     0
   );
   const totalMeja = filteredData.length > 0 ? filteredData[0].totalMeja : 0;
-
-  const chartData = filteredData.map((item) => ({
+  const chartData = allData.map((item) => ({
     name: item.bulan,
     booking: item.totalBooking,
     revenue: item.totalPendapatan,
@@ -158,7 +153,7 @@ export default function HighlightDashboard() {
       {/* ✅ Chart pakai hasil filter */}
       <div className="bg-[#0d1b2a] p-6 rounded-xl shadow-md">
         <h2 className="text-xl font-bold text-white mb-4">
-          Pergerakan Booking & Pendapatan
+          Grafik Booking & Pendapatan Dalam Tahun
         </h2>
 
         {chartData.length === 0 ? (
@@ -205,7 +200,7 @@ export default function HighlightDashboard() {
 
             <h2 className="text-lg font-bold mb-4">Pilih Rentang Waktu</h2>
 
-            <div className="flex flex-col gap-2">
+            <div className="max-h-60 overflow-y-auto flex flex-col gap-2 pr-2">
               {filterOptions.map((option) => (
                 <button
                   key={option}
@@ -213,11 +208,10 @@ export default function HighlightDashboard() {
                     setSelectedFilter(option);
                     setIsModalOpen(false);
                   }}
-                  className={`w-full px-4 py-2 rounded text-left ${
-                    selectedFilter === option
+                  className={`w-full px-4 py-2 rounded text-left ${selectedFilter === option
                       ? "bg-gray-200 font-bold"
                       : "hover:bg-gray-100"
-                  }`}
+                    }`}
                 >
                   {option}
                 </button>

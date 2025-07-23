@@ -23,38 +23,46 @@ export const mejaColumns = (
     },
   },
   {
-    accessorKey: "NamaMeja",
-    header: "Meja",
-    cell: ({ row }) => row.original.NamaMeja,
-  },
-  {
-    accessorKey: "Harga",
-    header: "Harga",
-    cell: ({ row }) =>
-      `Rp${Number(row.original.Harga).toLocaleString("id-ID")}`,
-  },
-  {
-    accessorKey: "TipeMeja",
-    header: "Tipe",
-    cell: ({ row }) => row.original.TipeMeja,
-  },
-  {
     accessorKey: "Foto",
     header: "Foto",
-    cell: ({ row }) =>
-    (
+    cell: ({ row }) => (
       <Image
         src={row.original.Foto}
         alt="Foto"
         height={500}
-        width={300}
-         className="w-fit h-500 object-cover rounded"
+        width={500}
+        className="w-fit h-20 object-cover rounded"
       />
-    )
+    ),
+  },
+  {
+    accessorKey: "id",
+    header: "Id",
+    cell: ({ row }) => row.original.id,
+  },
+  {
+    accessorKey: "NamaMeja",
+    header: "Nama Meja",
+    cell: ({ row }) => row.original.NamaMeja,
+  },
+  {
+  accessorKey: "NoMeja",
+  header: "No Meja",
+  cell: ({ row }) => row.original.NoMeja,
+  },
+  {
+    accessorKey: "TipeMeja",
+    header: "Tipe Meja",
+    cell: ({ row }) => row.original.TipeMeja,
+  },
+  {
+    accessorKey: "Harga",
+    header: "Harga",
+    cell: ({ row }) => `Rp${Number(row.original.Harga).toLocaleString("id-ID")}`,
   },
   {
     accessorKey: "Deskripsi",
-    header: "Deskripsi",
+    header: "Deskripsi Meja",
     cell: ({ row }) => row.original.Deskripsi,
   },
   {

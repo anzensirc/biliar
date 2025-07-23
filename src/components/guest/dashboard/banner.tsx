@@ -1,39 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useGetBanner } from "@/components/parts/admin/kelola-banner/api";
 
 export default function Banner() {
-  const banners = [
-    "/images/banner1.png",
-    "/images/banner2.png",
-    "/images/banner3.png",
-  ];
+  const { data, isLoading } = useGetBanner();
+  const banners = data?.data?.items || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? banners.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+    if (banners.length === 0) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
+      setIsAnimating(false);
+    }, 300);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === banners.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
+    if (banners.length === 0) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+      setIsAnimating(false);
+    }, 300);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  if (isLoading || banners.length === 0) return null;
+
   return (
-    <section className="relative w-full max-w-[1120px] h-[360px] mx-auto overflow-hidden">
-      {/* Banner Image */}
-      <Image
-        src={banners[currentIndex]}
-        alt={`Banner ${currentIndex + 1}`}
-        fill
-        className="object-cover"
-      />
+    <section className="relative w-full max-w-[1120px] h-[400px] mx-auto overflow-hidden">
+      <div
+        className={`w-full h-full relative transition-opacity duration-300 ${
+          isAnimating ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <Image
+          src={banners[currentIndex]?.Foto}
+          alt={`Banner ${currentIndex + 1}`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 1120px) 100vw, 1120px"
+        />
+      </div>
 
       {/* Left Arrow */}
       <button
@@ -51,12 +71,12 @@ export default function Banner() {
         <ChevronRight className="w-6 h-6" />
       </button>
 
-      {/* Slide Indicators */}
+      {/* Indicators */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
         {banners.map((_, index) => (
           <div
             key={index}
-            className={`w-3 h-3 rounded-full ${
+            className={`w-3 h-3 rounded-full transition ${
               index === currentIndex ? "bg-white" : "bg-gray-400"
             }`}
           ></div>

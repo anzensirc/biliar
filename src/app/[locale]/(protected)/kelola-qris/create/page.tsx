@@ -1,10 +1,10 @@
 "use client";
 
-import { useTutup } from "@/components/parts/admin/kelola-tutup/api";
+import { useQris } from "@/components/parts/admin/kelola-qris/api";
 import {
-  ClosedForm,
-  ClosedFormSchema,
-} from "@/components/parts/admin/kelola-tutup/validation";
+  QrisForm,
+  QrisFormSchema,
+} from "@/components/parts/admin/kelola-qris/validation";
 import { CustomFormFileInput } from "@/components/shared/forms/customFormFileInput";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
 import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
@@ -15,23 +15,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const CreateProductPage = () => {
+const CreateQrisPage = () => {
   const router = useRouter();
-  const createTutupMutation = useTutup("POST");
-  const form = useForm<ClosedForm>({
-    resolver: zodResolver(ClosedFormSchema),
+  const createQrisMutation = useQris("POST");
+  const form = useForm<QrisForm>({
+    resolver: zodResolver(QrisFormSchema),
     defaultValues: {
-      Deskripsi: "",
-      startdate: "",
-      enddate: "",
+      judul: "",
+      file: "",
     },
   });
 
-  const onSubmit = (data: ClosedForm) => {
+  const onSubmit = (data: QrisForm) => {
     // console.log("data", data);
-    createTutupMutation.mutate(data, {
+    createQrisMutation.mutate(data, {
       onSuccess: (data) => {
-        router.push("/kelola-tutup");
+        router.push("/kelola-qris");
       },
     });
   };
@@ -41,11 +40,11 @@ const CreateProductPage = () => {
       <BreadcrumbSetItem
         items={[
           {
-            title: "Kelola Tutup",
-            href: "/kelola-tutup",
+            title: "Kelola Qris",
+            href: "/kelola-qris",
           },
           {
-            title: "Tambah Tutup",
+            title: "Tambah Qris",
           },
         ]}
       />
@@ -54,20 +53,15 @@ const CreateProductPage = () => {
           <div className="">
             <h1 className="text-2xl font-bold mb-4">Tambah Produk</h1>
             <div className="space-y-3 mt-5">
-              <CustomFormInput<ClosedForm>
-                name="Deskripsi"
-                label="Deskripsi Tutup"
-                placeholder="Masukkan Deskripsi Tutup"
+              <CustomFormInput<QrisForm>
+                name="judul"
+                label="Judul Qris"
+                placeholder="Masukkan Judul Qris"
               />
-              <CustomFormInput<ClosedForm>
-                name="startdate"
-                label="Tanggal Mulai Tutup"
-                placeholder="Masukkan Tanggal Mulai Tutup"
-              />
-              <CustomFormInput<ClosedForm>
-                name="enddate"
-                label="Tanggal Berakhir Tutup"
-                placeholder="Masukkan Tanggal Berakhir Tutup"
+              <CustomFormFileInput<QrisForm>
+                name="file"
+                label="Foto"
+                placeholder="Upload Foto Qris"
               />
             </div>
             <div className="flex justify-center mt-6 gap-3">
@@ -82,4 +76,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default CreateQrisPage;

@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const CreateProductPage = () => {
+const CreateMejaPage = () => {
   const router = useRouter();
   const createMejaMutation = useMeja("POST");
   const form = useForm<MejaForm>({
@@ -105,4 +105,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default CreateMejaPage;

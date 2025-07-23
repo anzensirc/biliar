@@ -36,7 +36,6 @@ export const useGetMejaId = (id: number) => {
   );
 };
 
-// post
 export const useMeja = (method: "POST" | "PUT" = "POST", id?: number) => {
   return useFormMutation<ApiResponse<DataObject<MejaForm>>, Error, MejaForm>({
     mutationFn: async (data): Promise<ApiResponse<DataObject<MejaForm>>> => {

@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
+import { useGetBanner } from "@/components/parts/admin/kelola-banner/api";
 const tableCategories = ["Meja Kecil", "Meja Besar"] as const;
 const tableNumbers = {
   "Meja Kecil": [1],
   "Meja Besar": [1, 2, 3],
 };
 export default function Booking() {
+  const {data, isLoading} = useGetBanner();
+  const banner = data?.data;
   const searchParams = useSearchParams();
   const router = useRouter();
   const categoryFromQuery = searchParams.get(

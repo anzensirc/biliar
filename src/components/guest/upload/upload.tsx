@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 export default function UploadBukti() {
@@ -43,10 +44,12 @@ export default function UploadBukti() {
 
         <div className="border rounded bg-white flex flex-col items-center justify-center py-8">
           {preview ? (
-            <img
+            <Image
               src={preview}
-              alt=" "
-              className="mb-4 max-h-80 object-contain"
+              alt="Preview Image"
+              width={600} // isi sesuai kebutuhan
+              height={400} // isi sesuai kebutuhan
+              className="mb-4 object-contain max-h-80 w-auto"
             />
           ) : (
             <span className="text-gray-500 mb-4">Belum ada file dipilih</span>

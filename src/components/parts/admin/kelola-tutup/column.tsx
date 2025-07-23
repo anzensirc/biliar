@@ -14,27 +14,19 @@ export const tutupColumns = (
   perPage: number
 ): ColumnDef<TutupResponse>[] => [
   {
-    id: "no",
-    header: "No",
-    cell: ({ row }) => {
-      const number = (currentPage - 1) * perPage + row.index + 1;
-      return <div>{number}</div>;
-    },
-  },
-  {
-    accessorKey: "startdate",
-    header: "Tanggal Mulai",
-    cell: ({ row }) => row.original.startdate,
-  },
-  {
-    accessorKey: "enddate",
-    header: "Tanggal Berakhir",
-    cell: ({ row }) => row.original.enddate,
-  },
-  {
     accessorKey: "Deskripsi",
     header: "Deskripsi",
     cell: ({ row }) => row.original.Deskripsi,
+  },
+  {
+    accessorKey: "startdate",
+    header: "Tanggal Awal Tutup",
+    cell: ({ row }) => row.original.startdate,
+  },
+    {
+    accessorKey: "endddate",
+    header: "Tanggal Berakhir Tutup",
+    cell: ({ row }) => row.original.enddate,
   },
   {
     accessorKey: "aksi",
@@ -49,7 +41,7 @@ export const tutupColumns = (
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`master/booking/soft-delete/${row.original.id}`}
+            endpoint={`master/tutup/delete/${row.original.id}`}
             queryKey="useGetTutup"
           />
         </DropdownMenuContent>

@@ -12,6 +12,7 @@ import {
   Target,
   QrCode,
   Settings2,
+  Calendar,
 } from "lucide-react";
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const REGION_URL = process.env.NEXT_PUBLIC_API_REGION;
@@ -94,6 +95,12 @@ export const getNavData = (): navDateType => {
         roles: ["admin", "superadmin", "user"],
       },
       {
+        title: "Kelola Jadwal",
+        url: "/kelola-jadwal",
+        icon: Calendar,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
         title: "Syarat Ketentuan",
         url: "/syarat-ketentuan",
         icon: ScrollText,
@@ -101,7 +108,7 @@ export const getNavData = (): navDateType => {
       },
       {
         title: "Setting Web",
-        url: "/Setting Web",
+        url: "/setting-web",
         icon: Settings2,
         roles: ["admin", "superadmin"],
       },

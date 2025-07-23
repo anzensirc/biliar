@@ -4,10 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu } from "lucide-react";
+import { useGetSetting } from "@/components/parts/admin/setting-web/api";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { data, isLoading } = useGetSetting();
+  const setting = data?.data[0];
+  if (isLoading) return null;
+  
   return (
     <>
       <nav className="absolute top-0 left-0 w-full flex items-center justify-between px-6 md:px-20 py-4 shadow-md bg-blue-500 z-50">
@@ -15,8 +19,8 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center">
             <Image
-              src="/icons/ikonjoker.png"
-              alt="Logo JokerBilliarD"
+              src= {setting?.logoUrl  || "/icons/logo-dongan.png"}
+              alt="Logo Dongans Billiar"
               width={48}
               height={48}
             />

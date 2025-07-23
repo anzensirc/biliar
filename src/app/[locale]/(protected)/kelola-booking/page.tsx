@@ -30,6 +30,8 @@ export default function BookingManajemenPage() {
 
   const result = data?.data?.items ?? [];
 
+  console.log('cek',data)
+
   return (
     <div className="p-4">
       <BreadcrumbSetItem

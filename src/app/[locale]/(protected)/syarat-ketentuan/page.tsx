@@ -1,18 +1,21 @@
-// app/products/page.tsx atau path-mu
 "use client";
 
 import { useGetSyarat, useSyarat } from "@/components/parts/admin/syarat-ketentuan/api";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import useQueryBuilder from "@/hooks/useQueryBuilder";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect} from "react";
+import { useEffect } from "react";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TermFormSchema, TermForm } from "@/components/parts/admin/syarat-ketentuan/validation"; // pastikan path sesuai
 
 export default function SyaratManajemenPage() {
-  // fetching
   const searchParams = useSearchParams();
   const limit = searchParams.get("limit") || "10";
   const page = searchParams.get("page") || "1";
   const search = searchParams.get("search") || "";
+
   useQueryBuilder({
     dataFilter: [
       { key: "page", value: page },
@@ -23,19 +26,29 @@ export default function SyaratManajemenPage() {
   });
 
   const { data, refetch } = useGetSyarat();
-  const updateSyarat = useSyarat();
+  const updateSyarat = useSyarat("PUT", 1); // update id 1
 
-  const [formSyarat, setFormSyarat] = useState<string>(data?.data?.syarat || "");
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<TermForm>({
+    resolver: zodResolver(TermFormSchema),
+    defaultValues: {
+      syarat: "",
+    },
+  });
 
-  // Update form value when fetched data changes
   useEffect(() => {
-    setFormSyarat(data?.data?.syarat || "");
-  }, [data]);
+    if (data?.data?.syarat) {
+      setValue("syarat", data.data.syarat);
+    }
+  }, [data, setValue]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (formData: TermForm) => {
     try {
-      await updateSyarat.mutateAsync({ syarat: formSyarat });
+      await updateSyarat.mutateAsync(formData);
       alert("Syarat berhasil diperbarui!");
       refetch();
     } catch (error) {
@@ -49,13 +62,13 @@ export default function SyaratManajemenPage() {
       <BreadcrumbSetItem
         items={[
           {
-            title: "Syarat ",
+            title: "Syarat",
           },
         ]}
       />
       <h1 className="text-2xl font-bold mb-4">Syarat Ketentuan</h1>
 
-      {/* Card Preview */}
+      {/* Preview */}
       <div
         className="p-4 rounded-md bg-slate-100 shadow-md text-justify"
         dangerouslySetInnerHTML={{
@@ -64,15 +77,17 @@ export default function SyaratManajemenPage() {
       />
 
       {/* Form Edit */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <label className="block">
           <span className="font-medium">Edit Syarat Ketentuan:</span>
           <textarea
+            {...register("syarat")}
             className="mt-1 block w-full p-2 border rounded-md"
             rows={8}
-            value={formSyarat}
-            onChange={(e) => setFormSyarat(e.target.value)}
           />
+          {errors.syarat && (
+            <p className="text-sm text-red-600 mt-1">{errors.syarat.message}</p>
+          )}
         </label>
         <button
           type="submit"

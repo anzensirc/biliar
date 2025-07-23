@@ -2,34 +2,44 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useGetSetting } from "@/components/parts/admin/setting-web/api";
 
 export default function Footer() {
+  const { data, isLoading } = useGetSetting();
+
+  const setting = data?.data[0];
+
+  if (isLoading) return null;
+
   return (
-    // Mengubah 'px-22' menjadi 'pl-[20px] pr-8'
-    <footer className="bg-blue-500 text-white-800  flex justify-center flex-col">
+    <footer className="bg-gray-200 text-white-800 flex justify-center flex-col">
       <div className="px-20 py-10 grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Kolom 1: Deskripsi */}
-        <div className="">
-          <h2 className="font-bold mb-2">Joker-BilliarD</h2>
+        <div>
+          <h2 className="font-bold mb-2">Dongans Billiar</h2>
           <p className="text-sm">
-            Dongans Billiard bukan sekadar tempat main billiard—di sini kamu
-            bisa nongkrong santai sambil nikmati kopi dan camilan lezat di
-            warkop kami. Suasana nyaman, meja berkualitas, plus obrolan seru
-            bareng teman. Mau latihan serius atau sekadar hangout? Semua bisa di
-            Dongans Billiard!
+            {setting?.deskripsi && (
+              <>
+                {setting.deskripsi}
+                <br />
+              </>
+            )}
             <br />
+            Alamat : {setting?.alamat} {setting?.kodePos}
             <br />
-            Bandar Lampung 35131, Lampung, Indonesia
+            Telp :{" "}
+            {setting?.telepon?.map((tel, i) => (
+              <span key={i}>
+                {tel}
+                {i < setting.telepon.length - 1 ? ", " : ""}
+              </span>
+            ))}
             <br />
-            Telp +6281271589534
+            Email : {setting?.email}
             <br />
-            Email: dongansbilliar@gmail.com
+            Faks : {setting?.faks}
             <br />
-            Alamat: Jl. Pangeran Senopati Raya, jalur 2 Korpri Sukarame
-            (Belakang RM Padang Airan)
-            <br />
-            Buka Setiap Hari 12.00 - 02.00 WIB
-            <br />
+            Buka : {setting?.jamOperasional}
           </p>
         </div>
 
@@ -46,6 +56,12 @@ export default function Footer() {
             <li>
               <Link href="/tentang">Tentang</Link>
             </li>
+            <li>
+              <Link href="/cari-booking">Cari Booking</Link>
+            </li>
+            <li>
+              <Link href="/upload-bukti">Upload Bukti</Link>
+            </li>
           </ul>
         </div>
 
@@ -53,69 +69,77 @@ export default function Footer() {
         <div className="text-center">
           <h3 className="font-bold mb-2">Follow Kami</h3>
           <div className="flex justify-center gap-5">
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/icons/ikonfb1.png"
-                alt="Facebook"
-                width={32}
-                height={32}
-                className="hover:scale-110 transition"
-              />
-            </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/icons/ikonig.png"
-                alt="Instagram"
-                width={32}
-                height={32}
-                className="hover:scale-110 transition"
-              />
-            </a>
-            <a
-              href="https://wa.me/62812803196"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/icons/ikonwa1.png"
-                alt="WhatsApp"
-                width={32}
-                height={32}
-                className="hover:scale-110 transition"
-              />
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/icons/ikontwt.png"
-                alt="Twitter"
-                width={32}
-                height={32}
-                className="hover:scale-110 transition"
-              />
-            </a>
+            {setting?.sosialMedia?.[0] && (
+              <Link
+                href={setting.sosialMedia[0].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={setting.sosialMedia[0].icon || "/icons/ikonfb1.png"}
+                  alt={setting.sosialMedia[0].platform}
+                  width={32}
+                  height={32}
+                  className="hover:scale-110 transition"
+                />
+              </Link>
+            )}
+
+            {setting?.sosialMedia?.[1] && (
+              <Link
+                href={setting.sosialMedia[1].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={setting.sosialMedia[1].icon || "/icons/ikonig.png"}
+                  alt={setting.sosialMedia[1].platform}
+                  width={32}
+                  height={32}
+                  className="hover:scale-110 transition"
+                />
+              </Link>
+            )}
+
+            {setting?.sosialMedia?.[2] && (
+              <Link
+                href={setting.sosialMedia[2].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={setting.sosialMedia[2].icon || "/icons/ikonwa.png"}
+                  alt={setting.sosialMedia[2].platform}
+                  width={32}
+                  height={32}
+                  className="hover:scale-110 transition"
+                />
+              </Link>
+            )}
+
+            {setting?.sosialMedia?.[3] && (
+              <Link
+                href={setting.sosialMedia[3].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src={setting.sosialMedia[3].icon || "/icons/ikontwt.png"}
+                  alt={setting.sosialMedia[3].platform}
+                  width={32}
+                  height={32}
+                  className="hover:scale-110 transition"
+                />
+              </Link>
+            )}
           </div>
         </div>
       </div>
 
       {/* Copyright */}
       <div className="border-t p-4 border-gray-400 mt-8 pt-1 text-sm text-center">
-        <p>Hak Cipta Joker-BilliarD 2025</p>
-        <p>
-          Developed by Kuliah Praktek Teknik Informatika Institut Teknologi
-          Sumatera
-        </p>
+        <p>{setting.copyright}</p>
+        <p>Developed by {setting.developer}</p>
       </div>
     </footer>
   );

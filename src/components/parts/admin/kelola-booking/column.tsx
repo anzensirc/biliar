@@ -10,6 +10,7 @@ import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
 import { format } from "date-fns";
 import { BookingResponse } from "./interface";
+import Image from "next/image";
 
 export const bookingColumns = (
   currentPage: number,
@@ -22,6 +23,11 @@ export const bookingColumns = (
       const number = (currentPage - 1) * perPage + row.index + 1;
       return <div>{number}</div>;
     },
+  },
+  {
+    accessorKey: "id",
+    header: "id",
+    cell: ({ row }) => row.original.id,
   },
   {
     accessorKey: "KodeBooking",
@@ -64,7 +70,17 @@ export const bookingColumns = (
   {
     accessorKey: "BuktiPembayaran",
     header: "Bukti Pembayaran",
-    cell: ({ row }) => row.original.BuktiPembayaran,
+    cell: ({ row }) => {
+      return (
+        <Image
+          src={row.original?.BuktiPembayaran[0]?.Foto ?? "/icons/no_image.png"}
+          alt="Bukti Pembayaran"
+          width={100}
+          height={100}
+          className="w-fit h-20 object-cover rounded"
+        />
+      );
+    },
   },
   {
     accessorKey: "aksi",
@@ -75,11 +91,11 @@ export const bookingColumns = (
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/kelola-meja/edit/${row.original.id}`}>
+          <Link href={`/kelola-booking/edit/${row.original.id}`}>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`master/meja/delete/${row.original.id}`}
+            endpoint={`master/booking/soft-delete/${row.original.id}`}
             queryKey="useGetMeja"
           />
         </DropdownMenuContent>

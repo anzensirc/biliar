@@ -6,7 +6,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-3">
       <div className="flex items-center justify-between">
         {/* Bungkus title dan tombol di flex-row */}
         <div className="flex items-center gap-4">
@@ -29,12 +29,7 @@ export default function Page() {
         </div>
       </div>
       <HighlightDashboard />
-      <div>
-        pageeeee Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        Consectetur aliquid quas, nulla quam dolores at? Unde, voluptates
-        asperiores. Eaque rerum accusamus ea aspernatur ipsam ipsum sapiente.
-        Quod est enim excepturi!
-      </div>
+
     </div>
   );
 }

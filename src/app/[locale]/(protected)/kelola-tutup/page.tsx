@@ -1,21 +1,18 @@
-// app/products/page.tsx atau sesuai path-mu
 "use client";
 
 import { useGetTutup } from "@/components/parts/admin/kelola-tutup/api";
-import { tutupColumns } from "@/components/parts/admin/kelola-tutup/column";
 import LinkButton from "@/components/shared/button/linkButton";
-import DataTable from "@/components/shared/dataTable";
-import Search from "@/components/shared/filter/search";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import useQueryBuilder from "@/hooks/useQueryBuilder";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function TutupManajemenPage() {
-  // fetching
   const searchParams = useSearchParams();
   const limit = searchParams.get("limit") || "10";
   const page = searchParams.get("page") || "1";
   const search = searchParams.get("search") || "";
+
   const queryString = useQueryBuilder({
     dataFilter: [
       { key: "page", value: page },
@@ -24,13 +21,18 @@ export default function TutupManajemenPage() {
     ],
     delay: 200,
   });
-  //
-  const { data } = useGetTutup(queryString);
 
-  const result = data?.data?.items ?? [];
+  const { data, isLoading } = useGetTutup(queryString);
+  const result = data?.data[0];
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/admin/kelola-tutup/form"); // Ganti dengan path form kamu
+  };
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-6">
       <BreadcrumbSetItem
         items={[
           {
@@ -38,19 +40,31 @@ export default function TutupManajemenPage() {
           },
         ]}
       />
-      <h1 className="text-2xl font-bold mb-4">Daftar Tutup</h1>
-      <div className="flex gap-2 items-center my-5">
-        <Search name="search" />
-        <LinkButton title="Tambah Tutup" link="/kelola-tutup/create" />
+
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Kelola Tutup</h1>
+        <div className="flex justify-end my-5 min-h-[40px]">
+          {result ? (
+            <LinkButton
+              title="Edit Tutup"
+              link={`/kelola-tutup/create/${result.id}`}
+            />
+          ) : (
+            <LinkButton title="Tambah Tutup" link={`/kelola-tutup/create`} />
+          )}
+        </div>
       </div>
-      <DataTable
-        columns={tutupColumns(data?.data?.page ?? 1, Number(limit) ?? 10)}
-        data={result}
-        currentPage={data?.data?.page ?? 1}
-        totalItems={data?.data?.total_items ?? 0}
-        itemsPerPage={Number(limit)}
-        totalPages={data?.data?.total_pages ?? 1}
-      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="font-medium">Deskripsi:</div>
+        <div>{result?.Deskripsi || "-"}</div>
+
+        <div className="font-medium">Tanggal Mulai:</div>
+        <div>{result?.startdate || "-"}</div>
+
+        <div className="font-medium">Tanggal Berakhir:</div>
+        <div>{result?.enddate || "-"}</div>
+      </div>
     </div>
   );
 }
