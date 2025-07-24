@@ -4,6 +4,7 @@ export interface BiodataResponse{
   Nama: string
   NoTelp: string
   Alamat: string
+  Email?: string
   createdAt: string
   updatedAt: string
   deletedAt: any

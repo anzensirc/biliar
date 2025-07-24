@@ -57,9 +57,6 @@ export default function Footer() {
               <Link href="/tentang">Tentang</Link>
             </li>
             <li>
-              <Link href="/cari-booking">Cari Booking</Link>
-            </li>
-            <li>
               <Link href="/upload-bukti">Upload Bukti</Link>
             </li>
           </ul>

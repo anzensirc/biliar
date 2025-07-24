@@ -43,7 +43,7 @@ const ModalDelete = ({
         e.preventDefault();
         handleDelete();
       }}
-      className="cursor-pointer"
+      className="cursor-pointer text-red-600"
     >
       Hapus
     </DropdownMenuItem>

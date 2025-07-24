@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import {useGetSyarat} from "@/components/parts/admin/syarat-ketentuan/api";
 import { useGetJadwal } from "@/components/parts/admin/kelola-jadwal/api";
 import { useBooking } from "@/components/parts/admin/kelola-booking/api";
 import { useBiodata } from "@/components/parts/admin/kelola-biodata/api";
@@ -24,12 +24,10 @@ export default function JadwalPage() {
   const [selectedMeja, setSelectedMeja] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
-  const [showBiodataForm, setShowBiodataForm] = useState(false);
-  const [bookingId, setBookingId] = useState<number | null>(null);
   const [kodeBooking, setKodeBooking] = useState<string>("");
 
   const { data, isLoading } = useGetJadwal();
-  const { mutateAsync: createBooking } = useBooking("POST");
+  const { mutate: createBooking } = useBooking("POST");
   const { mutate: createBiodata } = useBiodata("POST");
 
   const form = useForm<BiodataForm>({
@@ -45,6 +43,7 @@ export default function JadwalPage() {
   const tipeOptions = Array.from(
     new Set(data?.data?.items.map((item) => item.meja?.TipeMeja))
   );
+
   const mejaOptions = Array.from(
     new Map(
       data?.data?.items
@@ -77,25 +76,20 @@ export default function JadwalPage() {
       jadwalIds: [...selectedSlotIds],
     };
 
-    try {
-      const response = await createBooking(transformData);
-      const bookingId = response.data.booking.id;
-      const kodeBooking = response.data.booking.KodeBooking;
-
-      Cookies.set("bookingId", bookingId.toString(), { expires: 1 });
-      Cookies.set("kodeBooking", kodeBooking, { expires: 1 });
-
-      setBookingId(bookingId);
-      setKodeBooking(kodeBooking);
-      form.setValue("BookingId", bookingId);
-      setShowBiodataForm(true);
-
-      console.log("Booking ID dan kodeBooking disimpan di cookies:", bookingId, kodeBooking);
-    } catch (error) {
-      console.error("Gagal membuat booking:", error);
-      alert("❌ Terjadi kesalahan saat membuat booking.");
-    }
+    createBooking(transformData, {
+      onSuccess: (response) => {
+        Cookies.set("bookingId", response.data.id.toString(),{ expires: 1 });
+      Cookies.set("kodeBooking", response.data.KodeBooking, { expires: 1 });
+      form.reset({
+        BookingId: response.data.id,
+      });
+      setKodeBooking(response.data.KodeBooking);
+      }
+    });
   };
+
+    const bookingId = form.watch("BookingId");
+
 
   const onSubmitBiodata = (data: BiodataForm) => {
     createBiodata(data, {
@@ -208,7 +202,7 @@ export default function JadwalPage() {
       )}
 
       {/* Form Biodata */}
-      {showBiodataForm && bookingId && (
+      {bookingId !== 0 && (
         <div className="mt-10 border-t pt-6">
           <h2 className="text-2xl font-bold mb-4">Isi Biodata Pemesan</h2>
 
@@ -235,6 +229,11 @@ export default function JadwalPage() {
                   name="NoTelp"
                   label="No Telepon"
                   placeholder="Masukkan Nomor Telepon"
+                />
+                <CustomFormInput<BiodataForm>
+                  name="Email"
+                  label="Email" 
+                  placeholder="Masukkan Email"
                 />
                 <CustomFormInput<BiodataForm>
                   name="BookingId"

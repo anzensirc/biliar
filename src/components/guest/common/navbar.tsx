@@ -55,12 +55,6 @@ export default function Navbar() {
             Booking
           </Link>
           <Link
-            href="/cari-booking"
-            className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
-          >
-            Cari Booking
-          </Link>
-          <Link
             href="/upload-bukti"
             className="px-3 py-2 rounded hover:bg-blue-700 hover:text-white text-white transition"
           >
@@ -98,13 +92,6 @@ export default function Navbar() {
             className="text-white"
           >
             Upload Bukti
-          </Link>
-          <Link
-            href="/cari-booking"
-            onClick={() => setIsMenuOpen(false)}
-            className="text-white"
-          >
-            Cari Booking
           </Link>
           <Link
             href="/tentang"

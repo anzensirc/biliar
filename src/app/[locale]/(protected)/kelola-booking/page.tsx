@@ -3,6 +3,7 @@
 
 import { useGetBooking } from "@/components/parts/admin/kelola-booking/api";
 import { bookingColumns } from "@/components/parts/admin/kelola-booking/column";
+import { useGetBookingById } from "@/components/parts/admin/riwayat-transaksi/api";
 import LinkButton from "@/components/shared/button/linkButton";
 import DataTable from "@/components/shared/dataTable";
 import Search from "@/components/shared/filter/search";
@@ -27,10 +28,7 @@ export default function BookingManajemenPage() {
   });
   //
   const { data } = useGetBooking(queryString);
-
   const result = data?.data?.items ?? [];
-
-  console.log('cek',data)
 
   return (
     <div className="p-4">

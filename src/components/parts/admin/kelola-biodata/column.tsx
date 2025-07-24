@@ -44,6 +44,11 @@ export const biodataColumns = (
     cell: ({ row }) => row.original.NoTelp,
   },
   {
+    accessorKey: "Email",
+    header: "Email",
+    cell: ({ row }) => row.original.Email,
+  },
+  {
     accessorKey: "aksi",
     header: "Aksi",
     cell: ({ row }) => (

@@ -4,6 +4,7 @@ export const BiodataFormSchema = z.object({
   Nama: z.string().min(1, { message: "Nama produk wajib diisi" }),
   NoTelp: z.string().min(1, { message: "No telepon wajib diisi" }),
   Alamat: z.string().min(1, { message: "Alamat wajib diisi" }),
+  Email: z.string().email({ message: "Email tidak valid" }),
   BookingId: z.preprocess(
     (val) => {
       if (typeof val === "string" && !isNaN(Number(val))) {

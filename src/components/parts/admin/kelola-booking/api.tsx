@@ -19,10 +19,13 @@ export const useGetBooking = (query?: string) => {
     {
       keepPreviousData: true,
       refetchIntervalInBackground: true,
+      refetchInterval: 5000,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      
     }
   );
 };
-
 // get by id
 export const getBookingId = async (
   id: number
@@ -39,11 +42,11 @@ export const useGetBookingId = (id: number) => {
 
 // post
 export const useBooking = (method: "POST" | "PUT" = "POST", id?: number) => {
-  return useFormMutation<ApiResponse<DataObject<BookingFormPayload>>, Error, BookingFormPayload>({
-    mutationFn: async (data): Promise<ApiResponse<DataObject<BookingFormPayload>>> => {
+  return useFormMutation<ApiResponse<DataObject<BookingResponse>>, Error, BookingFormPayload>({
+    mutationFn: async (data): Promise<ApiResponse<DataObject<BookingResponse>>> => {
       const endpoint = id ? `master/booking/update/${id}` : "master/booking/create";
       const delay = new Promise((resolve) => setTimeout(resolve, 2000));
-      const response: ApiResponse<DataObject<BookingFormPayload>> = await sendData(
+      const response: ApiResponse<DataObject<BookingResponse>> = await sendData(
         endpoint,
         data,
         method

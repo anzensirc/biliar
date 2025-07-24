@@ -1,4 +1,3 @@
-
 export interface BookingResponse {
   id: number
   mejaId: number
@@ -6,22 +5,29 @@ export interface BookingResponse {
   Harga: string
   KodeBooking: string
   durasiJam: string
-  TotalBayar: any
+  TotalBayar?: number
   konfirmasi: boolean
   createdAt: string
   updatedAt: string
   deletedAt: any
   meja: Meja
-  BuktiPembayaran: BuktiPembayaran[]
+  JamBooking: JamBooking[]
+  BiodataBooking: BiodataBooking[]
 }
 
 export interface Meja {
   id: number
   NamaMeja: string
-  JamBooking: JamBooking[]
 }
 
 export interface JamBooking {
+  id: number
+  BookingId: number
+  idMeja: number
+  idJadwalMeja: number
+  createdAt: string
+  updatedAt: string
+  deletedAt: any
   JadwalMeja: JadwalMeja
 }
 
@@ -36,8 +42,14 @@ export interface JadwalMeja {
   deletedAt: any
 }
 
-export interface BuktiPembayaran {
+export interface BiodataBooking {
   id: number
-  Foto: string
+  BookingId: number
+  Nama: string
+  NoTelp: string
+  Alamat: string
+  Email?: string
   createdAt: string
+  updatedAt: string
+  deletedAt: any
 }
