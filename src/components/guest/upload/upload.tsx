@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
-
+import { useRouter} from "next/navigation";
 export default function UploadBukti() {
   const [bookingCode, setBookingCode] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
+  const router = useRouter();
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -22,6 +23,7 @@ export default function UploadBukti() {
     }
     // Lakukan upload ke backend di sini
     alert(`Bukti untuk booking ${bookingCode} telah dikirim!`);
+    router.push("/");
   };
 
   return (
@@ -43,10 +45,12 @@ export default function UploadBukti() {
 
         <div className="border rounded bg-white flex flex-col items-center justify-center py-8">
           {preview ? (
-            <img
+            <Image
               src={preview}
-              alt=" "
-              className="mb-4 max-h-80 object-contain"
+              alt="Preview Image"
+              width={600} // isi sesuai kebutuhan
+              height={400} // isi sesuai kebutuhan
+              className="mb-4 object-contain max-h-80 w-auto"
             />
           ) : (
             <span className="text-gray-500 mb-4">Belum ada file dipilih</span>

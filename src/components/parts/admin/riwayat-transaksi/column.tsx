@@ -8,64 +8,103 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import Image from "next/image";
+import { BookingItem } from "./interface"; // ganti sesuai path importmu
 
-export const transaksiData = [
+export const transaksiColumns = (
+  currentPage: number,
+  perPage: number
+): ColumnDef<BookingItem>[] => [
   {
-    id: 1,
-    no: 1,
-    no_transaksi: "TRX001",
-    nama_pemesan: "John Doe",
-    tanggal_booking: "2023-10-01",
-    tanggal_transaksi: "2023-10-02",
-    total_bayar: 150000,
-    status_pembayaran: "Lunas",
-  },
-  {
-    id: 2,
-    no: 2,
-    no_transaksi: "TRX002",
-    nama_pemesan: "Azizi",
-    tanggal_booking: "2023-10-11",
-    tanggal_transaksi: "2023-10-12",
-    total_bayar: 150000,
-    status_pembayaran: "Belum Lunas",
-  },
-];
-
-export const transaksiColumns: ColumnDef<TransactionResponse>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => row.original.id,
-  },
-  {
-    accessorKey: "no",
+    id: "no",
     header: "No",
-    cell: ({ row }) => row.original.no,
+    cell: ({ row }) => {
+      const number = (currentPage - 1) * perPage + row.index + 1;
+      return <div>{number}</div>;
+    },
   },
   {
-    accessorKey: "nama_pemesan",
-    header: "Nama Pemesan",
-    cell: ({ row }) => row.original.nama_pemesan,
+    accessorKey: "KodeBooking",
+    header: "Kode Booking",
+    cell: ({ row }) => row.original.KodeBooking,
   },
   {
-    accessorKey: "tanggal_booking",
-    header: "Tipe",
-    cell: ({ row }) => row.original.tanggal_booking,
+    accessorKey: "meja.NamaMeja",
+    header: "Nama Meja",
+    cell: ({ row }) => row.original.meja?.NamaMeja || "-",
   },
   {
-    accessorKey: "tanggal_transaksi",
-    header: "Deskripsi",
-    cell: ({ row }) => row.original.tanggal_transaksi,
+    accessorKey: "Tanggal",
+    header: "Tanggal Booking",
+    cell: ({ row }) => new Date(row.original.Tanggal).toLocaleDateString("id-ID"),
   },
   {
-    accessorKey: "total_bayar",
+    id: "JamBooking",
+    header: "Jam Booking",
+    cell: ({ row }) => {
+      const jadwal = row.original.meja?.JamBooking?.[0]?.JadwalMeja;
+      return jadwal
+        ? `${jadwal.StartTime} - ${jadwal.EndTime}`
+        : "-";
+    },
+  },
+  {
+    accessorKey: "durasiJam",
+    header: "Durasi",
+    cell: ({ row }) => `${row.original.durasiJam} jam`,
+  },
+  {
+    accessorKey: "TotalBayar",
     header: "Total Bayar",
-    cell: ({ row }) => row.original.total_bayar,
+    cell: ({ row }) =>
+      `Rp${Number(row.original.TotalBayar).toLocaleString("id-ID")}`,
   },
   {
-    accessorKey: "status_pembayaran",
-    header: "Status Pembayaran",
-    cell: ({ row }) => row.original.status_pembayaran,
+    accessorKey: "konfirmasi",
+    header: "Konfirmasi",
+    cell: ({ row }) =>
+      row.original.konfirmasi ? (
+        <span className="text-green-600 font-semibold">Terkonfirmasi</span>
+      ) : (
+        <span className="text-red-600 font-semibold">Belum</span>
+      ),
+  },
+  {
+    id: "bukti",
+    header: "Bukti Pembayaran",
+    cell: ({ row }) => {
+      const bukti = row.original.BuktiPembayaran?.[0]?.Foto;
+      return bukti ? (
+        <Image
+          src={bukti}
+          alt="Bukti"
+          width={60}
+          height={60}
+          className="rounded object-cover"
+        />
+      ) : (
+        <span className="text-gray-400 italic">Belum Upload</span>
+      );
+    },
+  },
+  {
+    id: "aksi",
+    header: "Aksi",
+    cell: ({ row }) => (
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center justify-center w-[30px]">
+          <MoreVerticalIcon />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <Link href={`/kelola-booking/detail/${row.original.id}`}>
+            <DropdownMenuItem className="cursor-pointer">Lihat Detail</DropdownMenuItem>
+          </Link>
+          <ModalDelete
+            endpoint={`master/booking/delete/${row.original.id}`}
+            queryKey="useGetBooking"
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
   },
 ];

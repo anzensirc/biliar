@@ -15,9 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const CreateProductPage = () => {
+const CreateMejaPage = () => {
   const router = useRouter();
-  const createProductMutation = useMeja("POST");
+  const createMejaMutation = useMeja("POST");
   const form = useForm<MejaForm>({
     resolver: zodResolver(MejaFormSchema),
     defaultValues: {
@@ -32,7 +32,7 @@ const CreateProductPage = () => {
 
   const onSubmit = (data: MejaForm) => {
     // console.log("data", data);
-    createProductMutation.mutate(data, {
+    createMejaMutation.mutate(data, {
       onSuccess: (data) => {
         router.push("/kelola-meja");
       },
@@ -105,4 +105,4 @@ const CreateProductPage = () => {
   );
 };
 
-export default CreateProductPage;
+export default CreateMejaPage;

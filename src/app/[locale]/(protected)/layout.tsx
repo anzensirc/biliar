@@ -1,25 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
 import { AppSidebar } from "@/components/shared/layouts/appSidebar";
 import { MyBreadcrumb } from "@/components/shared/layouts/myBreadcrumb";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProtectedLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true); // ⬅️ State loading
+
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (!token) {
+      router.push("/login");
+    } else {
+      setLoading(false); // ⬅️ Only render content after token exists
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <p className="text-lg font-medium">Memuat...</p>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />

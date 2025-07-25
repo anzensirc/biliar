@@ -8,6 +8,7 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import Image from "next/image";
 
 export const mejaColumns = (
   currentPage: number,
@@ -22,24 +23,46 @@ export const mejaColumns = (
     },
   },
   {
+    accessorKey: "Foto",
+    header: "Foto",
+    cell: ({ row }) => (
+      <Image
+        src={row.original.Foto}
+        alt="Foto"
+        height={500}
+        width={500}
+        className="w-fit h-20 object-cover rounded"
+      />
+    ),
+  },
+  {
+    accessorKey: "id",
+    header: "Id",
+    cell: ({ row }) => row.original.id,
+  },
+  {
     accessorKey: "NamaMeja",
-    header: "Meja",
+    header: "Nama Meja",
     cell: ({ row }) => row.original.NamaMeja,
+  },
+  {
+  accessorKey: "NoMeja",
+  header: "No Meja",
+  cell: ({ row }) => row.original.NoMeja,
+  },
+  {
+    accessorKey: "TipeMeja",
+    header: "Tipe Meja",
+    cell: ({ row }) => row.original.TipeMeja,
   },
   {
     accessorKey: "Harga",
     header: "Harga",
-    cell: ({ row }) =>
-      `Rp${Number(row.original.Harga).toLocaleString("id-ID")}`,
-  },
-  {
-    accessorKey: "TipeMeja",
-    header: "Tipe",
-    cell: ({ row }) => row.original.TipeMeja,
+    cell: ({ row }) => `Rp${Number(row.original.Harga).toLocaleString("id-ID")}`,
   },
   {
     accessorKey: "Deskripsi",
-    header: "Deskripsi",
+    header: "Deskripsi Meja",
     cell: ({ row }) => row.original.Deskripsi,
   },
   {

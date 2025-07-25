@@ -1,50 +1,99 @@
-// app/products/page.tsx atau sesuai path-mu
 "use client";
 
-import {
-  syaratColumns,
-  syaratData,
-} from "@/components/parts/admin/syarat-ketentuan/column";
-import LinkButton from "@/components/shared/button/linkButton";
-import DataTable from "@/components/shared/dataTable";
-import Search from "@/components/shared/filter/search";
+import { useGetSyarat, useSyarat } from "@/components/parts/admin/syarat-ketentuan/api";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
-import { useState } from "react";
+import useQueryBuilder from "@/hooks/useQueryBuilder";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-export default function MejaManajemenPage() {
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 5;
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TermFormSchema, TermForm } from "@/components/parts/admin/syarat-ketentuan/validation"; // pastikan path sesuai
 
-  const totalItems = syaratData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const paginatedData = syaratData.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+export default function SyaratManajemenPage() {
+  const searchParams = useSearchParams();
+  const limit = searchParams.get("limit") || "10";
+  const page = searchParams.get("page") || "1";
+  const search = searchParams.get("search") || "";
+
+  useQueryBuilder({
+    dataFilter: [
+      { key: "page", value: page },
+      { key: "limit", value: limit },
+      { key: "search", value: search },
+    ],
+    delay: 200,
+  });
+
+  const { data, refetch } = useGetSyarat();
+  const updateSyarat = useSyarat("PUT", 1); // update id 1
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<TermForm>({
+    resolver: zodResolver(TermFormSchema),
+    defaultValues: {
+      syarat: "",
+    },
+  });
+
+  useEffect(() => {
+    if (data?.data?.syarat) {
+      setValue("syarat", data.data.syarat);
+    }
+  }, [data, setValue]);
+
+  const onSubmit = async (formData: TermForm) => {
+    try {
+      await updateSyarat.mutateAsync(formData);
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-8">
       <BreadcrumbSetItem
         items={[
           {
-            title: "Syarat Ketentuan",
+            title: "Syarat",
           },
         ]}
       />
-      <h1 className="text-2xl font-bold mb-4">
-        Pengaturan Syarat dan Ketentuan
-      </h1>
-      <div className="flex gap-2 items-center my-5">
-        <Search name="search" />
-      </div>
-      <DataTable
-        columns={syaratColumns}
-        data={paginatedData}
-        currentPage={page}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        totalPages={totalPages}
+      <h1 className="text-2xl font-bold mb-4">Syarat Ketentuan</h1>
+
+      {/* Preview */}
+      <div
+        className="p-4 rounded-md bg-blue-400 shadow-md text-justify"
+        dangerouslySetInnerHTML={{
+          __html: (data?.data?.syarat ?? "-").replace(/\n/g, "<br />"),
+        }}
       />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <label className="block">
+          <span className="font-medium">Edit Syarat Ketentuan:</span>
+          <textarea
+            {...register("syarat")}
+            className="mt-1 block w-full p-2 bg-slate-200 border rounded-md"
+            rows={8}
+          />
+          {errors.syarat && (
+            <p className="text-sm text-red-600 mt-1">{errors.syarat.message}</p>
+          )}
+        </label>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          disabled={updateSyarat.isLoading}
+        >
+          {updateSyarat.isLoading ? "Menyimpan..." : "Simpan"}
+        </button>
+      </form>
     </div>
   );
 }

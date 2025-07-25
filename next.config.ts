@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
   devIndicators: {
     position: "bottom-right",
   },
+  images: {
+    domains: [
+      "dshzlnrzugmwbiqobzuj.supabase.co",
+      // tambahkan domain lain kalau ada
+    ],
+  },
 };
 
 export default withNextIntl(nextConfig);

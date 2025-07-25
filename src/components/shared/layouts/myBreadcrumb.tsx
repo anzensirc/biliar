@@ -12,6 +12,10 @@ import { create } from "zustand";
 import { useStore } from "zustand";
 import React, { useEffect } from "react";
 import Link from "next/link";
+import { useLogout } from "@/components/parts/logout/api"; // sesuaikan path-nya jika perlu
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+
 
 export type Crumb = { title: string; href?: string };
 
@@ -24,44 +28,26 @@ type BreadcrumbSetItemType = {
   items: Crumb[];
 };
 
-/**
- * Zustand store global untuk manajemen breadcrumb.
- *
- * ✅ Cara penggunaan:
- *
- * - Untuk mengatur seluruh breadcrumb:
- *   myBreadcrumb.set([
- *     { title: "Dashboard", href: "/dashboard" },
- *     { title: "Settings" },
- *   ]);
- *
- * - Untuk menambahkan satu item breadcrumb (misalnya nama dinamis):
- *   myBreadcrumb.append({ title: "Detail Siswa", href: "/siswa/123" });
- *
- * ⚠️ NOTE:
- * - Jika digunakan di luar komponen React, gunakan:
- *   `myBreadcrumb.getState().set(...)` atau `myBreadcrumb.getState().append(...)`
- */
 export const myBreadcrumb = create<BreadcrumbStore>((set) => ({
   items: [],
-  set: (items) =>
-    set(() => ({
-      items,
-    })),
+  set: (items) => set(() => ({ items })),
 }));
 
-/**
- * Komponen ini menampilkan breadcrumb yang bisa diatur secara dinamis
- * dari halaman mana pun dengan memanggil `myBreadcrumb.set([...])`
- * atau `myBreadcrumb.append({ title, href })`.
- *
- * Breadcrumb awal diambil dari struktur sidebar menggunakan helper `findBreadcrumb()`
- * berdasarkan pathname dan data dinamis `schoolLevels`.
- *
- * Jika breadcrumb masih kosong, akan muncul placeholder loading (`animate-pulse`)
- */
 export const MyBreadcrumb = () => {
   const { items } = useStore(myBreadcrumb);
+  const router = useRouter();
+  const logoutMutation = useLogout();
+
+  const handleLogout = async () => {
+    try {
+      await logoutMutation.mutateAsync();
+      // Optional: hapus token/cookies kalau ada
+      Cookies.remove("accessToken");
+      router.push("/login"); // redirect ke login page
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
 
   return (
     <Breadcrumb className="w-full">
@@ -103,12 +89,10 @@ export const MyBreadcrumb = () => {
         <div className="">
           <button
             className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm"
-            onClick={() => {
-              // Aksi logout
-              console.log("Logout clicked");
-            }}
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
           >
-            Logout
+            {logoutMutation.isPending ? "Logging out..." : "Logout"}
           </button>
         </div>
       </div>

@@ -14,7 +14,7 @@
 /coverage
 
 package-lock.json
-.env
+
 # next.js
 /.next/
 /out/

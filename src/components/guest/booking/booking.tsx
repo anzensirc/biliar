@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
+import { useGetBanner } from "@/components/parts/admin/kelola-banner/api";
 const tableCategories = ["Meja Kecil", "Meja Besar"] as const;
 const tableNumbers = {
   "Meja Kecil": [1],
   "Meja Besar": [1, 2, 3],
 };
 export default function Booking() {
+  const {data, isLoading} = useGetBanner();
+  const banner = data?.data;
   const searchParams = useSearchParams();
   const router = useRouter();
   const categoryFromQuery = searchParams.get(
@@ -151,39 +153,6 @@ export default function Booking() {
             })}
           </div>
         </div>
-
-        {/* <button
-          onClick={() => {
-            setShowCategoryOptions(!showCategoryOptions);
-            setShowNumberOptions(false);
-          }}
-          className="w-full bg-[#ADD8E6] text-gray-800 px-4 py-2 mb-2 rounded flex items-center justify-between"
-        >
-          <span>{selectedCategory ? selectedCategory : 'Pilih Kategori Meja'}</span>
-          <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {showCategoryOptions && (
-          <div className="absolute w-full bg-white border rounded shadow z-10 mb-2">
-            {tableCategories.map((category, idx) => (
-              <button
-                key={idx}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  setShowCategoryOptions(false);
-                  setShowNumberOptions(true);
-                  setSelectedTableNumber(null);
-                }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        )} */}
-
         {/* Pilih Nomor Meja */}
         {selectedCategory && (
           <div className="w-full mb-4">
@@ -211,40 +180,6 @@ export default function Booking() {
             </div>
           </div>
         )}
-
-        {/* {selectedCategory && (
-          <button
-            onClick={() => setShowNumberOptions(!showNumberOptions)}
-            className="w-full bg-[#ADD8E6] text-gray-800 px-4 py-2 mb-4 rounded flex items-center justify-between"
-          >
-            <span>
-              {selectedTableNumber
-                ? `${selectedCategory}-${selectedTableNumber}`
-                : 'Pilih Nomor Meja'}
-            </span>
-            <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        )}
-
-        {showNumberOptions && selectedCategory && (
-          <div className="absolute w-full bg-white border rounded shadow z-10 mb-4">
-            {(tableNumbers[selectedCategory] || []).map((num) => (
-              <button
-                key={num}
-                onClick={() => {
-                  setSelectedTableNumber(num);
-                  setShowNumberOptions(false);
-                }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-100"
-              >
-                {`${selectedCategory}-${num}`}
-              </button>
-            ))}
-          </div>
-        )} */}
-
         {/* Pilih Tanggal */}
         <div className="mb-4">
           <label className="block mb-1 font-semibold">Pilih Tanggal</label>
@@ -262,64 +197,12 @@ export default function Booking() {
               "
             />
 
-            {/* <style jsx>{`
-              input[type="date"]::-webkit-calendar-picker-indicator {
-                filter: invert(100%);
-              }
-            `}</style> */}
           </div>
         </div>
-
-        {/* <div className="mb-4">
-          <label className="block mb-1 font-semibold">Pilih Tanggal</label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="
-              w-full border border-black bg-white text-black
-              p-2 rounded focus:border-[#87CEFA] focus:ring-2 focus:ring-[#E0F2F7]
-            "
-          />
-        </div> */}
-
         {/* Tanggal terpilih */}
         {selectedDate && (
           <p className="font-medium mb-2">Tanggal Terpilih: {selectedDate}</p>
         )}
-
-        {/* Slot waktu multi-select
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {slots.map((slot, idx) => {
-            const isSelected = selectedSlots.includes(slot.time);
-            const isBooked = slot.status === 'Booked';
-            return (
-              <button
-                key={idx}
-                disabled={isBooked}
-                onClick={() => toggleSlot(slot.time)}
-                className={`flex flex-col items-center justify-center p-4 rounded ${
-                  isBooked
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : isSelected
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-blue-200'
-                }`}
-              >
-                <p className="text-sm">{slot.time}</p>
-                <p
-                  className={`text-xs ${
-                    isBooked
-                      ? 'text-red-600 font-semibold'
-                      : 'text-green-600 font-semibold'
-                  }`}
-                >
-                  {slot.status}
-                </p>
-              </button>
-            );
-          })}
-        </div> */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {slots.map((slot, idx) => {
             const isSelected = selectedSlots.includes(slot.time);
@@ -344,11 +227,7 @@ export default function Booking() {
                   </p>
                 )}
                 <p className="text-sm font-bold">{slot.time}</p>
-                {/* {selectedDate && (
-                  <p className="text-xs mt-1 text-black">
-                    Tanggal: {selectedDate}
-                  </p>
-                )} */}
+      
                 <p
                   className={`text-xs ${
                     isBooked
