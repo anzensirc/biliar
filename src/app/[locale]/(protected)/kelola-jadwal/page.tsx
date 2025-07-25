@@ -26,8 +26,10 @@ import { Check, Copy } from "lucide-react";
 export default function JadwalPage() {
   const router = useRouter();
   const [selectedTipe, setSelectedTipe] = useState<string>("");
-  const [selectedMeja, setSelectedMeja] = useState<number | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedMeja, setSelectedMeja] = useState<number | null>(null);  
+  const [selectedDate, setSelectedDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
   const [selectedSlotIds, setSelectedSlotIds] = useState<number[]>([]);
   const [kodeBooking, setKodeBooking] = useState<string>("");
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false); // ⬅️ tambahkan ini
