@@ -36,6 +36,22 @@ export const useGetQrisId = (id: number) => {
   );
 };
 
+const getQrisObj = async (
+  query?: string
+): Promise<ApiResponse<DataObject<QrisResponse>>> => {
+  return await fetcher(query ? `master/qris?${query}` : `master/qris`);
+};
+
+export const useGetQrisObj = (query?: string) => {
+  return useQuery<ApiResponse<DataObject<QrisResponse>>, Error>(
+    ["useGetQris", query],
+    () => getQrisObj(query),
+    {
+      keepPreviousData: true,
+      refetchIntervalInBackground: true,
+    }
+  );
+};
 // Create or Update QRIS
 export const useQris = (method: "POST" | "PUT" = "POST", id?: number) => {
   return useFormMutation<ApiResponse<DataObject<QrisForm>>, Error, QrisForm>({

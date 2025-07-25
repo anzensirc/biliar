@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-
+import { useRouter} from "next/navigation";
 export default function UploadBukti() {
   const [bookingCode, setBookingCode] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
+  const router = useRouter();
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
@@ -23,6 +23,7 @@ export default function UploadBukti() {
     }
     // Lakukan upload ke backend di sini
     alert(`Bukti untuk booking ${bookingCode} telah dikirim!`);
+    router.push("/");
   };
 
   return (

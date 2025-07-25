@@ -1,13 +1,4 @@
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import ModalDelete from "@/components/shared/modalDelete";
-import { MoreVerticalIcon } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 import { SettingResponse } from "./interface";
 
@@ -73,14 +64,6 @@ export const settingColumns = (
     header: "Jam Operasional",
     cell: ({ row }) => row.original.jamOperasional,
   },
-  // {
-  //   accessorKey: "sosialMedia",
-  //   header: "Sosial Media",
-  //   cell: ({ row }) =>
-  //     row.original.sosialMedia.length > 0
-  //       ? row.original.sosialMedia.map((s) => s.platform).join(", ")
-  //       : "-",
-  // },
   {
     accessorKey: "developer",
     header: "Developer",
@@ -91,26 +74,6 @@ export const settingColumns = (
     header: "Copyright",
     cell: ({ row }) => (
       <div className="line-clamp-1 max-w-xs">{row.original.copyright}</div>
-    ),
-  },
-  {
-    id: "aksi",
-    header: "Aksi",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center justify-center w-[30px]">
-          <MoreVerticalIcon />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <Link href={`/setting-web/edit/${row.original.id}`}>
-            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
-          </Link>
-          <ModalDelete
-            endpoint={`master/setting-web/delete/${row.original.id}`}
-            queryKey="useGetSetting"
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
     ),
   },
 ];

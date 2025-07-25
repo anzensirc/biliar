@@ -49,11 +49,9 @@ export default function SyaratManajemenPage() {
   const onSubmit = async (formData: TermForm) => {
     try {
       await updateSyarat.mutateAsync(formData);
-      alert("Syarat berhasil diperbarui!");
       refetch();
     } catch (error) {
       console.error(error);
-      alert("Gagal memperbarui syarat.");
     }
   };
 
@@ -70,19 +68,18 @@ export default function SyaratManajemenPage() {
 
       {/* Preview */}
       <div
-        className="p-4 rounded-md bg-slate-100 shadow-md text-justify"
+        className="p-4 rounded-md bg-blue-400 shadow-md text-justify"
         dangerouslySetInnerHTML={{
           __html: (data?.data?.syarat ?? "-").replace(/\n/g, "<br />"),
         }}
       />
 
-      {/* Form Edit */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <label className="block">
           <span className="font-medium">Edit Syarat Ketentuan:</span>
           <textarea
             {...register("syarat")}
-            className="mt-1 block w-full p-2 border rounded-md"
+            className="mt-1 block w-full p-2 bg-slate-200 border rounded-md"
             rows={8}
           />
           {errors.syarat && (

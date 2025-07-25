@@ -58,3 +58,23 @@ export const useJadwal = (method: "POST" | "PUT" = "POST", id?: number) => {
         : "Data berhasil diperbarui",
   });
 };
+
+// get all jadwal tanpa pagination
+const getAllJadwal = async (): Promise<ApiResponse<JadwalMeja[]>> => {
+  const res = await fetcher("master/jadwal-meja?limit=9999");
+  return {
+    ...res,
+    data: res.data.items, // ambil langsung array items-nya
+  };
+};
+
+export const useGetAllJadwal = () => {
+  return useQuery<ApiResponse<JadwalMeja[]>, Error>(
+    ["useGetAllJadwal"],
+    () => getAllJadwal(),
+    {
+      keepPreviousData: true,
+      refetchIntervalInBackground: true,
+    }
+  );
+};

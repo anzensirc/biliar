@@ -43,14 +43,14 @@ const CreateSettingPage = () => {
     },
   });
 
-  const {
-    fields: teleponFields,
-    append: appendTelepon,
-    remove: removeTelepon,
-  } = useFieldArray({
-    control: form.control,
-    name: "telepon",
-  });
+  // const {
+  //   fields: teleponFields,
+  //   append: appendTelepon,
+  //   remove: removeTelepon,
+  // } = useFieldArray({
+  //   control: form.control,
+  //   name: "telepon",
+  // });
   const {
     fields: sosialMediaFields,
     append: appendSosialMedia,
@@ -133,7 +133,7 @@ const CreateSettingPage = () => {
               label="Logo Perusahaan"
             />
 
-            {/* TELEPON */}
+            {/* TELEPON
             <div>
               <p className="font-semibold">Telepon</p>
               {teleponFields.map((field, index) => (
@@ -159,7 +159,7 @@ const CreateSettingPage = () => {
               >
                 Tambah Telepon
               </Button>
-            </div>
+            </div> */}
 
             {/* SOSIAL MEDIA */}
             <div>

@@ -18,8 +18,6 @@ export const SettingFormSchema = z.object({
   sosialMedia: z.array(SosialMediaSchema),
   copyright: z.string().min(1, { message: "Copyright tidak boleh kosong" }),
   developer: z.string().min(1, { message: "Developer tidak boleh kosong" }),
-  createdAt: z.string().optional(), // biasanya tidak dikirim saat form input
-  updatedAt: z.string().optional(), // biasanya tidak dikirim saat form input
 })
 
 export type SettingForm = z.infer<typeof SettingFormSchema>

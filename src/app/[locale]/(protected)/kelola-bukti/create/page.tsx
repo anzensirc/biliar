@@ -51,7 +51,7 @@ export default function BuktiUploadPage() {
     mutate(data as any, {
       onSuccess: () => {
         alert("✅ Bukti pembayaran berhasil dikirim.");
-        router.push("/success");
+        router.push("/");
       },
       onError: () => {
         alert("❌ Gagal mengirim bukti pembayaran.");

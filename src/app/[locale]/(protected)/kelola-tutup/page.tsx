@@ -50,7 +50,7 @@ export default function TutupManajemenPage() {
               link={`/kelola-tutup/create/${result.id}`}
             />
           ) : (
-            <LinkButton title="Tambah Tutup" link={`/kelola-tutup/create`} />
+            <LinkButton title="Tambah Tutup" link={`/kelola-tutup/create/$id`} />
           )}
         </div>
       </div>

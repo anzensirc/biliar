@@ -8,14 +8,14 @@ export interface SettingResponse {
   faks: string
   email: string
   jamOperasional: string
-  sosialMedia: SosialMedum[]
+  sosialMedia: SosialMedia[]
   copyright: string
   developer: string
   createdAt: string
   updatedAt: string
 }
 
-export interface SosialMedum {
+export interface SosialMedia {
   url: string
   platform: string
 }

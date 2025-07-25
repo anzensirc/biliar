@@ -47,29 +47,41 @@ export const jadwalColumns = (
     cell: ({ row }) => row.original.meja.NamaMeja,
   },
   {
-  accessorKey: "",
-  header: "Tipe Meja",
-  cell: ({ row }) => row.original.meja.TipeMeja,
+    accessorKey: "",
+    header: "Tipe Meja",
+    cell: ({ row }) => row.original.meja.TipeMeja,
   },
   {
     accessorKey: "IsActive",
-    header: "Tipe Meja",
-    cell: ({ row }) => row.original.meja.IsActive,
+    header: "IsActive",
+    cell: ({ row }) => (row.original.meja.IsActive ? "Aktif" : "Tidak Aktif"),
   },
+  {
+    accessorKey: "Closed",
+    header: "Closed",
+    cell: ({ row }) => (row.original.meja.Closed ? "Ditutup" : "Dibuka"),
+  },
+
   {
     accessorKey: "meja.Harga",
     header: "Harga",
-    cell: ({ row }) => `Rp${Number(row.original.meja.Harga).toLocaleString("id-ID")}`,
+    cell: ({ row }) =>
+      `Rp${Number(row.original.meja.Harga).toLocaleString("id-ID")}`,
   },
   {
     accessorKey: "Start Time",
-    header: "Deskripsi Meja",
+    header: "Jam Awal",
     cell: ({ row }) => row.original.StartTime,
   },
   {
     accessorKey: "End Time",
-    header: "Deskripsi Meja",
+    header: "Jadwal Akhir",
     cell: ({ row }) => row.original.EndTime,
+  },
+  {
+    accessorKey: "Status",
+    header: "Status Jadwal",
+    cell: ({ row }) => row.original.Status,
   },
   {
     accessorKey: "aksi",
@@ -80,12 +92,12 @@ export const jadwalColumns = (
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <Link href={`/kelola-meja/edit/${row.original.id}`}>
+          <Link href={`/kelola-jadwal/edit/${row.original.id}`}>
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`master/meja/delete/${row.original.id}`}
-            queryKey="useGetMeja"
+            endpoint={`master/jadwal-meja/delete/${row.original.id}`}
+            queryKey="useGetJadwal"
           />
         </DropdownMenuContent>
       </DropdownMenu>

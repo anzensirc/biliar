@@ -24,6 +24,11 @@ export const qrisColumns = (
     },
   },
   {
+    accessorKey: "Id",
+    header: "Id QRIS",
+    cell: ({ row }) => row.original.id,
+  },
+  {
     accessorKey: "Judul",
     header: "Judul QRIS",
     cell: ({ row }) => row.original.Judul,
