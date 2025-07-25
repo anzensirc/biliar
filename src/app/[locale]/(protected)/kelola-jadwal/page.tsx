@@ -120,7 +120,7 @@ export default function JadwalPage() {
     createBiodata(data, {
       onSuccess: () => {
         alert("✅ Biodata berhasil disimpan.");
-        router.push("/upload-bukti/create");
+        router.push("/upload-bukti/temp");
       },
     });
   };
