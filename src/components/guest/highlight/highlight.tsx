@@ -6,36 +6,11 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useGetMeja } from "@/components/parts/admin/kelola-meja/api";
 
-const mejaKecilDescription = `
-🎱 Meja Biliar Kecil
-Meja biliar kecil cocok untuk pemain pemula, keluarga, atau area dengan ruang terbatas.
-Ukuran umumnya 6-7 feet (1.8–2.1 meter) dengan rangka kayu solid atau MDF berkualitas.
-Permukaan dilapisi kain felt halus, bumper karet responsif, pocket jaring atau plastik.
-Kelebihan: hemat tempat, harga terjangkau.
-Kekurangan: tidak cocok untuk turnamen profesional.
-`;
-
-const mejaBesarDescription = `
-🎱 Meja Biliar Besar
-Meja biliar besar berstandar turnamen dengan ukuran 8-9 feet (2.4–2.7 meter).
-Menggunakan rangka kayu keras premium dan permukaan slate stone untuk presisi optimal.
-Dilengkapi cushion karet profesional, pocket kulit standar regulasi, dan aksesori lengkap.
-Kelebihan: akurasi tinggi, cocok untuk kompetisi.
-Kekurangan: butuh ruang besar, harga lebih tinggi.
-`;
-
-// type MejaResponse = {
-//   id: number;
-//   NamaMeja: string;
-//   Harga: number;
-//   TipeMeja: string;
-//   Foto: string;
-//   Deskripsi: string;
-// };
+const mejaKecilDescription = `🎱 Meja Biliar Kecil ...`; // singkat biar fokus ke animasi
+const mejaBesarDescription = `🎱 Meja Biliar Besar ...`;
 
 export default function Highlight() {
   const { data, isLoading } = useGetMeja();
-
   const mejaList = data?.data?.items || [];
 
   const filteredTables = useMemo(() => {
@@ -63,24 +38,30 @@ export default function Highlight() {
         images: [besar.Foto],
       });
     }
+
     return tables;
   }, [mejaList]);
 
-  if (isLoading) return <div className="px-20 py-28">Loading...</div>;
+  if (isLoading) return <div className="px-4 py-20 text-center">Loading...</div>;
 
   return (
-    <main className="px-20 py-28">
-      <h1 className="text-2xl font-bold mb-4">Pilihan Meja Tersedia</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredTables.map((table) => (
-          <TableCard key={table.id} table={table} />
+    <main className="px-4 sm:px-8 md:px-20 py-6 sm:py-20">
+      <h1 className="text-xl sm:text-2xl font-bold pt-12 pb-8 text-center">
+        Pilihan Meja Tersedia
+      </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {filteredTables.map((table, i) => (
+          <div
+            key={table.id}
+            className="animate-fade-up"
+            style={{ animationDelay: `${i * 100}ms`, animationFillMode: "both" }}
+          >
+            <TableCard table={table} />
+          </div>
         ))}
       </div>
     </main>
   );
-
-  <div className="">
-    {mejaList.map((meja: any) => <div key={meja.id}>{meja.NamaMeja}</div>)}</div>
 }
 
 type Table = {
@@ -95,52 +76,50 @@ function TableCard({ table }: { table: Table }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevImage = () => {
-    setCurrentIndex((prev) =>
-      prev === 0 ? table.images.length - 1 : prev - 1
-    );
+    setCurrentIndex((prev) => (prev === 0 ? table.images.length - 1 : prev - 1));
   };
 
   const nextImage = () => {
-    setCurrentIndex((prev) =>
-      prev === table.images.length - 1 ? 0 : prev + 1
-    );
+    setCurrentIndex((prev) => (prev === table.images.length - 1 ? 0 : prev + 1));
   };
 
   return (
-    <div className="bg-blue-200 rounded-lg shadow p-4 flex flex-col items-center relative">
-      <div className="w-full text-center font-semibold text-xl mb-2">
-        {table.name}
-      </div>
-      <div className="relative w-full h-80 mb-4 overflow-hidden rounded">
+    <div className="bg-blue-100 rounded-xl shadow-lg p-4 flex flex-col items-center space-y-4 transition-all duration-300 hover:scale-105">
+      <div className="text-lg sm:text-xl font-semibold text-center">{table.name}</div>
+
+      <div className="relative w-full aspect-[4/3] rounded overflow-hidden">
         <img
           src={table.images[currentIndex]}
           alt={table.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-opacity duration-500"
         />
         <button
           onClick={prevImage}
-          className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow"
+          className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
         >
-          <ChevronLeft className="w-4 h-10" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={nextImage}
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow"
+          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
         >
-          <ChevronRight className="w-4 h-10" />
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
+
       <Link
         href={`/booking?category=${encodeURIComponent(table.category)}`}
-        className="bg-blue-500 hover:bg-green-500 text-white px-4 py-2 rounded mb-4 inline-block text-center"
+        className="bg-blue-500 hover:bg-green-500 text-white text-sm sm:text-base px-4 py-2 rounded transition-all duration-300"
       >
         Lihat Jadwal
       </Link>
-      <div className="w-full bg-white p-4 rounded">
-        <h3 className="text-lg font-semibold mb-2">Deskripsi:</h3>
-        <p className="text-black-700">{table.description}</p>
+
+      <div className="w-full bg-white p-4 rounded text-sm sm:text-base text-justify transition-all duration-300">
+        <h3 className="font-semibold mb-2">Deskripsi:</h3>
+        <p>{table.description}</p>
       </div>
     </div>
   );
 }
- 
+
+/* Tambahkan style animasi manual ke tailwind */

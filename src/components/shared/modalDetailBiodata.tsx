@@ -48,7 +48,7 @@ export default function ModalDetailBiodata({
               <strong>No. Telepon:</strong> {biodata.NoTelp}
             </div>
             <div>
-              <strong>Alamat:</strong> {biodata.Alamat}
+              <strong>Alamat:</strong> {biodata.Alamat.length > 20 ? `${biodata.Alamat.substring(0, 20)}...` : biodata.Alamat}
             </div>
             <div>
               <strong>Email:</strong> {biodata.Email}

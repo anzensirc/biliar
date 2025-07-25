@@ -1,80 +1,122 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
-import { useRouter} from "next/navigation";
-export default function UploadBukti() {
-  const [bookingCode, setBookingCode] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const router = useRouter();
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-    }
-  };
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-  const handleSubmit = () => {
-    if (!bookingCode || !file) {
-      alert("Lengkapi kode booking dan upload bukti terlebih dahulu.");
-      return;
-    }
-    // Lakukan upload ke backend di sini
-    alert(`Bukti untuk booking ${bookingCode} telah dikirim!`);
-    router.push("/");
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { CustomFormInput } from "@/components/shared/forms/customFormInput";
+import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
+import {
+  BuktiForm,
+  BuktiFormSchema,
+} from "@/components/parts/admin/kelola-bukti/validation";
+import { useBukti } from "@/components/parts/admin/kelola-bukti/api";
+import { useGetQris } from "@/components/parts/admin/kelola-qris/api";
+
+export default function BuktiUploadManualPage() {
+  const router = useRouter();
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const form = useForm<BuktiForm>({
+    resolver: zodResolver(BuktiFormSchema),
+    defaultValues: {
+      kodeBooking: "",
+      file: undefined,
+    },
+  });
+
+  const { mutate } = useBukti("POST");
+  const { data: qrisData, isLoading: isLoadingQris } = useGetQris();
+  const QrisFoto = qrisData?.data?.items?.[0]?.Foto;
+
+  const onSubmit = (data: BuktiForm) => {
+    mutate(data as any, {
+      onSuccess: () => {
+        router.push("/");
+      },
+      onError: () => {
+        alert("❌ Gagal mengirim bukti pembayaran.");
+      },
+    });
   };
 
   return (
-    <div className="w-full flex justify-center pt-[51px]">
-      <div className="w-full md:w-4/6 max-w-5xl mx-auto px-10 py-8 bg-gray-300 rounded-md space-y-6">
-        <h2 className="text-lg font-semibold">Upload Bukti Pembayaran</h2>
-        <div>
-          <label className="block text-sm mb-1">Kode Booking</label>
-          <input
-            type="text"
-            value={bookingCode}
-            onChange={(e) => setBookingCode(e.target.value)}
-            placeholder="Masukkan kode booking"
-            className="w-full border bg-white text-white-100 rounded px-3 py-2"
-            // className="w-full border bg-red-500 text-white-300 rounded px-3 py-2"
-            // className="w-full border border-blue-500 bg-gray-100 text-blue-900 rounded px-3 py-2"
-          />
-        </div>
+    <div className="p-4 space-y-6">
+      <BreadcrumbSetItem
+        items={[{ title: "Upload Bukti Pembayaran" }]}
+      />
 
-        <div className="border rounded bg-white flex flex-col items-center justify-center py-8">
-          {preview ? (
-            <Image
-              src={preview}
-              alt="Preview Image"
-              width={600} // isi sesuai kebutuhan
-              height={400} // isi sesuai kebutuhan
-              className="mb-4 object-contain max-h-80 w-auto"
-            />
-          ) : (
-            <span className="text-gray-500 mb-4">Belum ada file dipilih</span>
-          )}
-          <label className="cursor-pointer bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition">
-            Upload Foto
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </label>
-        </div>
+      <h1 className="text-2xl font-bold mb-4 mx-8">Upload Bukti Pembayaran</h1>
 
-        <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="bg-white text-black px-6 py-2 rounded-full font-semibold hover:bg-blue-300 transition"
-          >
-            Kirim
-          </button>
-        </div>
-      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 m-12">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Kolom Kiri */}
+            <div className="space-y-4">
+              <CustomFormInput<BuktiForm>
+                name="kodeBooking"
+                label="Kode Booking"
+                placeholder="Masukkan kode booking"
+              />
+
+              <div className="flex flex-col gap-2">
+                <label className="font-medium">Upload Bukti Transfer</label>
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      form.setValue("file", file);
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  className="border p-4 rounded-md w-full"
+                />
+
+                {preview && (
+                  <Image
+                    src={preview}
+                    alt="Preview"
+                    width={600}
+                    height={400}
+                    className="rounded-md object-contain mt-4"
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Kolom Kanan */}
+            <div className="flex flex-col items-center justify-center">
+              <label className="font-medium mb-2">Scan QR untuk Transfer</label>
+              {isLoadingQris ? (
+                <p>Loading QR...</p>
+              ) : QrisFoto ? (
+                <Image
+                  src={QrisFoto}
+                  alt="QRIS"
+                  width={250}
+                  height={250}
+                  className="rounded-lg shadow border"
+                />
+              ) : (
+                <p className="text-red-500">QRIS tidak tersedia</p>
+              )}
+            </div>
+          </div>
+
+          {/* Tombol Submit */}
+          <div className="pt-4">
+            <Button type="submit" className="w-full rounded-full">
+              Kirim Bukti
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

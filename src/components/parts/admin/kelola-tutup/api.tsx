@@ -1,18 +1,20 @@
 import { ApiResponse, DataObject, DataPaginate } from "@/types";
-import { ClosedForm } from "./validation";
+import { closedForm } from "./validation";
 import { fetcher, sendData } from "@/services/api/fetcher";
 import { useFormMutation } from "@/hooks/useFormMutation";
 import { useQuery } from "@tanstack/react-query";
+import { TutupResponse } from "./interface";
   
+// get
 // get
 const getTutup = async (
   query?: string
-): Promise<ApiResponse<DataObject<TutupResponse[]>>> => {
+): Promise<ApiResponse<TutupResponse[]>> => {
   return await fetcher(query ? `master/closed?${query}` : `master/closed`);
 };
 
 export const useGetTutup = (query?: string) => {
-  return useQuery<ApiResponse<DataObject<TutupResponse[]>>, Error>(
+  return useQuery<ApiResponse<TutupResponse[]>, Error>(
     ["useGetTutup", query],
     () => getTutup(query),
     {
@@ -22,7 +24,6 @@ export const useGetTutup = (query?: string) => {
   );
 };
 
-// get by id
 export const getTutupId = async (
   id: number
 ): Promise<ApiResponse<DataObject<TutupResponse>>> => {
@@ -38,11 +39,11 @@ export const useGetTutupId = (id: number) => {
 
 // post
 export const useTutup = (method: "POST" | "PUT" = "POST", id?: number) => {
-  return useFormMutation<ApiResponse<DataObject<ClosedForm>>, Error, ClosedForm>({
-    mutationFn: async (data): Promise<ApiResponse<DataObject<ClosedForm>>> => {
+  return useFormMutation<ApiResponse<DataObject<TutupResponse>>, Error, TutupResponse>({
+    mutationFn: async (data): Promise<ApiResponse<DataObject<TutupResponse>>> => {
       const endpoint = id ? `master/closed/create/${id}` : "master/closed/create";
       const delay = new Promise((resolve) => setTimeout(resolve, 2000));
-      const response: ApiResponse<DataObject<ClosedForm>> = await sendData(
+      const response: ApiResponse<DataObject<TutupResponse>> = await sendData(
         endpoint,
         data,
         method

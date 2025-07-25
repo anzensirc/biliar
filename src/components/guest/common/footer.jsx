@@ -46,18 +46,18 @@ export default function Footer() {
         {/* Kolom 2: Halaman Cepat */}
         <div className="text-left items-center">
           <h3 className="font-bold mb-4 text-center">Halaman Cepat</h3>
-          <ul className="space-y-5 text-sm flex flex-col items-center">
+          <ul className="space-y-2 text-sm flex flex-col items-center">
             <li>
-              <Link href="/dashboard">Beranda</Link>
+              <Link href="/">Beranda</Link>
             </li>
             <li>
               <Link href="/booking">Booking</Link>
             </li>
             <li>
-              <Link href="/tentang">Tentang</Link>
+              <Link href="/upload-bukti">Upload Bukti</Link>
             </li>
             <li>
-              <Link href="/upload-bukti">Upload Bukti</Link>
+              <Link href="/tentang">Tentang</Link>
             </li>
           </ul>
         </div>

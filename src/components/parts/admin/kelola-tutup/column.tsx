@@ -8,26 +8,33 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
+import { TutupResponse } from "./interface";
 
 export const tutupColumns = (
   currentPage: number,
   perPage: number
 ): ColumnDef<TutupResponse>[] => [
   {
-    accessorKey: "Deskripsi",
-    header: "Deskripsi",
-    cell: ({ row }) => row.original.Deskripsi,
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => row.original.id,
   },
   {
-    accessorKey: "startdate",
-    header: "Tanggal Awal Tutup",
-    cell: ({ row }) => row.original.startdate,
+    accessorKey: "date",
+    header: "Tanggal Tutup",
+    cell: ({ row }) => row.original.date,
+  },
+  {
+    accessorKey: "reason",
+    header: "Alasan Tutup",
+    cell: ({ row }) => row.original.reason,
   },
     {
-    accessorKey: "endddate",
-    header: "Tanggal Berakhir Tutup",
-    cell: ({ row }) => row.original.enddate,
+    accessorKey: "type",
+    header: "Tipe",
+    cell: ({ row }) => row.original.type,
   },
+
   {
     accessorKey: "aksi",
     header: "Aksi",
@@ -41,9 +48,13 @@ export const tutupColumns = (
             <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
           </Link>
           <ModalDelete
-            endpoint={`master/tutup/delete/${row.original.id}`}
+            endpoint={`master/closed/delete:${row.original.id}`}
             queryKey="useGetTutup"
           />
+          {/* <ModalOpen
+            endpoint={`master/closed/open:${row.original.id}`}
+            queryKey="useGetTutup"
+          /> */}
         </DropdownMenuContent>
       </DropdownMenu>
     ),

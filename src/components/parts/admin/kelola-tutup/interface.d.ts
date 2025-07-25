@@ -1,9 +1,8 @@
-interface TutupResponse {
+export interface TutupResponse {
   id: number
-  startdate: string
-  enddate: string
-  Deskripsi: string
+  date: string
+  type: string
+  reason: string
+  referenceId: any
   createdAt: string
-  updatedAt: string
-  deletedAt: any
 }

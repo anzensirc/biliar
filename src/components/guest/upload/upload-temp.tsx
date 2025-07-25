@@ -21,6 +21,7 @@ import { useGetQris } from "@/components/parts/admin/kelola-qris/api";
 export default function BuktiUploadTempPage() {
   const router = useRouter();
   const [kodeBooking, setKodeBooking] = useState<string>("");
+  const [preview, setPreview] = useState<string | null>(null);
 
   const form = useForm<BuktiForm>({
     resolver: zodResolver(BuktiFormSchema),
@@ -48,7 +49,6 @@ export default function BuktiUploadTempPage() {
   const onSubmit = (data: BuktiForm) => {
     mutate(data as any, {
       onSuccess: () => {
-        alert("✅ Bukti pembayaran berhasil dikirim.");
         router.push("/");
       },
       onError: () => {
@@ -60,11 +60,7 @@ export default function BuktiUploadTempPage() {
   return (
     <div className="p-4 space-y-6">
       <BreadcrumbSetItem
-        items={[
-          {
-            title: "Upload Bukti Pembayaran",
-          },
-        ]}
+        items={[{ title: "Upload Bukti Pembayaran" }]}
       />
 
       <h1 className="text-2xl font-bold mb-4 mx-8">Upload Bukti Pembayaran</h1>
@@ -89,10 +85,26 @@ export default function BuktiUploadTempPage() {
                     const file = e.target.files?.[0];
                     if (file) {
                       form.setValue("file", file);
+                      // hanya preview image, bukan pdf
+                      if (file.type.startsWith("image/")) {
+                        setPreview(URL.createObjectURL(file));
+                      } else {
+                        setPreview(null);
+                      }
                     }
                   }}
                   className="border p-4 rounded-md w-full"
                 />
+
+                {preview && (
+                  <Image
+                    src={preview}
+                    alt="Preview"
+                    width={600}
+                    height={400}
+                    className="rounded-md object-contain mt-4"
+                  />
+                )}
               </div>
             </div>
 
@@ -117,7 +129,6 @@ export default function BuktiUploadTempPage() {
 
           {/* Tombol Submit */}
           <div className="pt-4">
-            
             <Button type="submit" className="w-full rounded-full">
               Kirim Bukti
             </Button>

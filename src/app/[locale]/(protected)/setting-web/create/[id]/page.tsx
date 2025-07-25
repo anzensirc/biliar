@@ -43,14 +43,15 @@ const CreateSettingPage = () => {
     },
   });
 
-  // const {
-  //   fields: teleponFields,
-  //   append: appendTelepon,
-  //   remove: removeTelepon,
-  // } = useFieldArray({
-  //   control: form.control,
-  //   name: "telepon",
-  // });
+  const {
+    fields: teleponFields,
+    append: appendTelepon,
+    remove: removeTelepon,
+  } = useFieldArray({
+    control: form.control,
+    name: "sosialMedia",
+  });
+
   const {
     fields: sosialMediaFields,
     append: appendSosialMedia,
@@ -59,12 +60,21 @@ const CreateSettingPage = () => {
     control: form.control,
     name: "sosialMedia",
   });
-  const onSubmit = (data: SettingForm) => {
-    createSettingMutation.mutate(data, {
-      onSuccess: () => {
-        router.push("/setting-web");
+
+  const onSubmit = (data: any) => {
+    console.log("Data sebelum submit:", data);
+    createSettingMutation.mutate(
+      {
+        ...data,
+        telepon: JSON.stringify(data.telepon),
+        sosialMedia: JSON.stringify(data.sosialMedia),
       },
-    });
+      {
+        onSuccess: () => {
+          router.push("/setting-web");
+        },
+      }
+    );
   };
 
   useEffect(() => {
@@ -133,7 +143,7 @@ const CreateSettingPage = () => {
               label="Logo Perusahaan"
             />
 
-            {/* TELEPON
+            {/* TELEPON */}
             <div>
               <p className="font-semibold">Telepon</p>
               {teleponFields.map((field, index) => (
@@ -155,11 +165,11 @@ const CreateSettingPage = () => {
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => appendTelepon("")}
+                onClick={() => appendTelepon({ url: "", platform: "" })}
               >
                 Tambah Telepon
               </Button>
-            </div> */}
+            </div>
 
             {/* SOSIAL MEDIA */}
             <div>

@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="flex flex-col gap-20 pt-24">
-        <Tentang />
+        <Tentang/>
       </main>
       <Footer />
     </>
