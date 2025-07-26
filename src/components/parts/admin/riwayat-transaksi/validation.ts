@@ -1,19 +1,16 @@
-import { custom, z } from "zod";
+import { z } from "zod";
 
-export const TransactionFormSchema = z.object({
-  custom_name: z.string().min(1, { message: "Nama produk wajib diisi" }),
-  transaction_number: z
-    .string()
-    .min(1, { message: "Nomor transaksi wajib diisi" }),
-  date_booking: z.string().min(1, { message: "Tanggal booking wajib diisi" }),
-  date_transaction: z
-    .string()
-    .min(1, { message: "Tanggal transaksi wajib diisi" }),
-  total_payment: z.string().min(1, { message: "Total pembayaran wajib diisi" }),
-  payment_status: z
-    .string()
-    .min(1, { message: "Status pembayaran wajib diisi" }),
-  action: z.string().min(1, { message: "Aksi wajib diisi" }),
+export const BookingFormSchema = z.object({
+  mejaId: z.string().min(1, { message: "Nama produk wajib diisi" }),
+  tanggal: z.string().min(1, { message: "Tanggal wajib diisi" }),
+  jadwalIds: z.preprocess(
+    (val) => {
+      if (typeof val === "string" && !isNaN(Number(val))) {
+        return Number(val); // Convert string to number
+      }
+      return val;
+    },
+    z.array(z.number()).min(1, { message: "Jadwal wajib dipilih" })
+  ),
 });
-
-export type TransactionForm = z.infer<typeof TransactionFormSchema>;
+export type BookingFormPayload = z.infer<typeof BookingFormSchema>;

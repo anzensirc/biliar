@@ -30,7 +30,64 @@ export const getNavData = (): navDateType => {
         icon: LayoutDashboard,
         roles: ["admin", "superadmin", "user"],
       },
-      // {
+      {
+        title: "Kelola Meja",
+        url: "/kelola-meja",
+        icon: Target,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Kelola Booking",
+        url: "/kelola-booking",
+        icon: BookOpenCheck,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Riwayat Transaksi",
+        url: "/riwayat-transaksi",
+        icon: FileText,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Kelola Jadwal",
+        url: "/kelola-jadwal",
+        icon: Calendar,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Kelola Tutup",
+        url: "/kelola-tutup",
+        icon: CalendarX,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Kelola Baner",
+        url: "/kelola-banner",
+        icon: Upload,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Syarat Ketentuan",
+        url: "/syarat-ketentuan",
+        icon: ScrollText,
+        roles: ["admin", "superadmin", "user"],
+      },
+      {
+        title: "Setting Web",
+        url: "/setting-web",
+        icon: Settings2,
+        roles: ["admin", "superadmin"],
+      },
+      {
+        title: "Kelola Qris",
+        url: "/kelola-qris",
+        icon: QrCode,
+        roles: ["admin", "superadmin"],
+      },
+    ],
+  };
+};
+// {
       //   title: "Form Input",
       //   url: "/form-input",
       //   icon: DockIcon,
@@ -64,61 +121,3 @@ export const getNavData = (): navDateType => {
       //   ],
       // },
       // Uncomment if you want to add a dashboard link
-      {
-        title: "Kelola Meja",
-        url: "/kelola-meja",
-        icon: Target,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Kelola Booking",
-        url: "/kelola-booking",
-        icon: BookOpenCheck,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Riwayat Transaksi",
-        url: "/riwayat-transaksi",
-        icon: FileText,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Kelola Baner",
-        url: "/kelola-banner",
-        icon: Upload,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Kelola Tutup",
-        url: "/kelola-tutup",
-        icon: CalendarX,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Kelola Jadwal",
-        url: "/kelola-jadwal",
-        icon: Calendar,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Syarat Ketentuan",
-        url: "/syarat-ketentuan",
-        icon: ScrollText,
-        roles: ["admin", "superadmin", "user"],
-      },
-      {
-        title: "Setting Web",
-        url: "/setting-web",
-        icon: Settings2,
-        roles: ["admin", "superadmin"],
-      },
-      {
-        title: "Kelola Qris",
-        url: "/kelola-qris",
-        icon: QrCode,
-        roles: ["admin", "superadmin"],
-      },
-      
-    ],
-  };
-};

@@ -2,15 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { BookingResponse } from "./interface";
 import Image from "next/image";
 
-export const riwayatColumns = (
-  currentPage: number,
-  perPage: number
+export const riwayatallColumns = (
+  data: BookingResponse[]
 ): ColumnDef<BookingResponse>[] => [
   {
     id: "no",
     header: "No",
     cell: ({ row }) => {
-      const number = (currentPage - 1) * perPage + row.index + 1;
+      const number = row.index + 1;
       return <div>{number}</div>;
     },
   },
@@ -80,34 +79,36 @@ export const riwayatColumns = (
   {
     accessorKey: "Nama",
     header: "Nama Pemesan",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Nama ?? "-",
+    cell: ({ row }) => row.original.BiodataBooking?.[0]?.Nama ?? "-",
   },
   {
     accessorKey: "NoTelp",
     header: "No. Telepon",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.NoTelp ?? "-",
+    cell: ({ row }) => row.original.BiodataBooking?.[0]?.NoTelp ?? "-",
   },
   {
     accessorKey: "Alamat",
     header: "Alamat",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Alamat ?? "-",
+    cell: ({ row }) => row.original.BiodataBooking?.[0]?.Alamat ?? "-",
   },
   {
     accessorKey: "Email",
     header: "Email",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Email ?? "-",
+    cell: ({ row }) => row.original.BiodataBooking?.[0]?.Email ?? "-",
   },
   {
     accessorKey: "Foto",
     header: "Foto",
     cell: ({ row }) => (
       <div className="relative w-full max-w-sm h-20">
-        <Image
-          src={row.original.BuktiPembayaran[0]?.Foto}
-          alt="Foto"
-          fill
-          className="object-cover rounded"
-        />
+        {row.original.BuktiPembayaran?.[0]?.Foto && (
+          <Image
+            src={row.original.BuktiPembayaran[0].Foto}
+            alt="Foto"
+            fill
+            className="object-cover rounded"
+          />
+        )}
       </div>
     ),
   },

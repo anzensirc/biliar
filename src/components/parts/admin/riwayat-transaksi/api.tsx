@@ -1,62 +1,52 @@
-import { ApiResponse, DataObject } from "@/types";
-import { TransactionForm } from "./validation"; // bentuk form input jika ada
+import { ApiResponse, DataObject, DataPaginate } from "@/types";
+import { BookingFormPayload } from "../kelola-booking/validation";
 import { fetcher, sendData } from "@/services/api/fetcher";
 import { useFormMutation } from "@/hooks/useFormMutation";
 import { useQuery } from "@tanstack/react-query";
-import { BookingItem, BookingDetailResponse } from "./interface";
+import { BookingResponse } from "./interface";
 
-// === ✅ GET All Booking ===
+// get
 const getBooking = async (
   query?: string
-): Promise<ApiResponse<BookingItem[]>> => {
-  return await fetcher(
-    query ? `master/booking?${query}` : `master/booking`
-  );
+): Promise<ApiResponse<DataPaginate<BookingResponse>>> => {
+  return await fetcher(query ? `master/booking?${query}` : `master/booking`);
 };
 
 export const useGetBooking = (query?: string) => {
-  return useQuery<ApiResponse<BookingItem[]>, Error>(
+  return useQuery<ApiResponse<DataPaginate<BookingResponse>>, Error>(
     ["useGetBooking", query],
     () => getBooking(query),
     {
       keepPreviousData: true,
       refetchIntervalInBackground: true,
+      refetchInterval: 5000,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      
     }
   );
 };
-
-// === ✅ GET Booking by ID ===
-export const getBookingById = async (
+// get by id
+export const getBookingId = async (
   id: number
-): Promise<ApiResponse<DataObject<BookingDetailResponse>>> => {
+): Promise<ApiResponse<DataObject<BookingResponse>>> => {
   return await fetcher(`master/booking/${id}`);
 };
 
-export const useGetBookingById = (id: number) => {
-  return useQuery<ApiResponse<DataObject<BookingDetailResponse>>, Error>(
-    ["useGetBookingById", id],
-    () => getBookingById(id)
+export const useGetBookingId = (id: number) => {
+  return useQuery<ApiResponse<DataObject<BookingResponse>>, Error>(
+    ["useGetBookingId", id],
+    () => getBookingId(id)
   );
 };
 
-// === ✅ POST / PUT Booking ===
-export const useBookingMutation = (
-  method: "POST" | "PUT" = "POST",
-  id?: number
-) => {
-  return useFormMutation<
-    ApiResponse<DataObject<TransactionForm>>,
-    Error,
-    TransactionForm
-  >({
-    mutationFn: async (
-      data
-    ): Promise<ApiResponse<DataObject<TransactionForm>>> => {
-      const endpoint = id
-        ? `master/booking/${id}/update`
-        : "master/booking/create";
+// post
+export const useBooking = (method: "POST" | "PUT" = "POST", id?: number) => {
+  return useFormMutation<ApiResponse<DataObject<BookingResponse>>, Error, BookingFormPayload>({
+    mutationFn: async (data): Promise<ApiResponse<DataObject<BookingResponse>>> => {
+      const endpoint = id ? `master/booking/update/${id}` : "master/booking/create";
       const delay = new Promise((resolve) => setTimeout(resolve, 2000));
-      const response: ApiResponse<DataObject<TransactionForm>> = await sendData(
+      const response: ApiResponse<DataObject<BookingResponse>> = await sendData(
         endpoint,
         data,
         method
@@ -65,10 +55,29 @@ export const useBookingMutation = (
       return response;
     },
     loadingMessage:
-      method === "POST" ? "Menyimpan booking..." : "Memperbarui booking...",
+      method === "POST" ? "Menyimpan data..." : "Memperbarui data...",
     successMessage:
       method === "POST"
-        ? "Booking berhasil ditambahkan"
-        : "Booking berhasil diperbarui",
+        ? "Data berhasil ditambahkan"
+        : "Data berhasil diperbarui",
   });
+};
+
+const getAllRiwayat = async (): Promise<ApiResponse<BookingResponse[]>> => {
+  const res = await fetcher("master/jadwal-meja?limit=9999");
+  return {
+    ...res,
+    data: res.data.items,
+  };
+};
+
+export const useGetAllRiwayat = () => {
+  return useQuery<ApiResponse<BookingResponse[]>, Error>(
+    ["useGetAllJadwal"],
+    () => getAllRiwayat(),
+    {
+      keepPreviousData: true,
+      refetchIntervalInBackground: true,
+    }
+  );
 };

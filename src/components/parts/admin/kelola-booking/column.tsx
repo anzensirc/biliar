@@ -49,9 +49,9 @@ export const bookingColumns = (
     accessorKey: "Jam Main",
     header: "Jam Main",
     cell: ({ row }) => (
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="grid grid-cols-3 gap-2">
         {row.original.JamBooking.map((item, i) => (
-          <span key={i} className="p-2 rounded-md bg-gray-50">
+          <span key={i} className="p-2 rounded-md bg-gray-50 text-center">
             {item.JadwalMeja.StartTime}-{item.JadwalMeja.EndTime}
           </span>
         ))}
@@ -67,12 +67,12 @@ export const bookingColumns = (
     accessorKey: "TotalBayar",
     header: "Total Bayar",
     cell: ({ row }) =>
-      row.original.TotalBayar ??
+      row.original.totalBayar ??
       `Rp. ${(Number(row.original.Harga) * Number(row.original.durasiJam)).toLocaleString("id-ID")}`,
   },
   {
     accessorKey: "konfirmasi",
-    header: "Status Konfirmasi",
+    header: "Status Pembayaran",
     cell: ({ row }) => {
       const isConfirmed = row.original.konfirmasi;
       return (
@@ -83,30 +83,18 @@ export const bookingColumns = (
               : "bg-yellow-100 text-yellow-700"
           }`}
         >
-          {isConfirmed ? "Terkonfirmasi" : "Menunggu"}
+          {isConfirmed ? "Terkonfirmasi" : "Menunggu Pembayaran"}
         </span>
       );
     },
-  },
-  {
-    accessorKey: "Nama",
-    header: "Nama Pemesan",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Nama ?? "-",
-  },
-  {
-    accessorKey: "NoTelp",
-    header: "No. Telepon",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.NoTelp ?? "-",
-  },
-  {
-    accessorKey: "Alamat",
-    header: "Alamat",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Alamat ?? "-",
-  },
-  {
-    accessorKey: "Email",
-    header: "Email",
-    cell: ({ row }) => row.original.BiodataBooking[0]?.Email ?? "-",
+    // Filter support
+    filterFn: (row, _columnId, value) => {
+      if (value === "all") return true;
+      if (value === "confirmed") return row.original.konfirmasi === true;
+      if (value === "pending") return row.original.konfirmasi === false;
+      return true;
+    },
+    enableColumnFilter: true,
   },
   {
     accessorKey: "aksi",
@@ -117,10 +105,7 @@ export const bookingColumns = (
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          
-          <ModalDetailBiodata 
-              data={row.original} 
-          />
+          <ModalDetailBiodata data={row.original} />
 
           {!row.original.konfirmasi && (
             <ModalKonfirmasi

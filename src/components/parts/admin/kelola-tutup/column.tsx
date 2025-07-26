@@ -1,62 +1,62 @@
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreVerticalIcon } from "lucide-react";
-import Link from "next/link";
-import ModalDelete from "@/components/shared/modalDelete";
+import ModalDelete from "@/components/shared/modalDeleteIcon";
 import { TutupResponse } from "./interface";
-
+import ToggleOpenWithModal from "@/components/shared/ToggleOpenWithModal";
 export const tutupColumns = (
   currentPage: number,
   perPage: number
 ): ColumnDef<TutupResponse>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => row.original.id,
-  },
-  {
     accessorKey: "date",
     header: "Tanggal Tutup",
-    cell: ({ row }) => row.original.date,
+    cell: ({ row }) => {
+      const date = new Date(row.original.date);
+      return date.toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+    },
   },
   {
     accessorKey: "reason",
     header: "Alasan Tutup",
     cell: ({ row }) => row.original.reason,
   },
-    {
+  {
     accessorKey: "type",
     header: "Tipe",
     cell: ({ row }) => row.original.type,
   },
+  {
+    accessorKey: "buka",
+    header: "Buka ?",
+    cell: ({ row }) => {
+      const data = row.original;
+      if (data.type === "TUTUP") {
+        return (
+          <ToggleOpenWithModal
+            closedId={data.id}
+            queryKey="useGetTutup"
+            defaultChecked={data.openedBy.length > 0}
+            openedById={data.openedBy[0]?.id}
+          />
+        );
+      }
+      return <span className="text-gray-400 italic">-</span>;
+    },
+  },
 
   {
     accessorKey: "aksi",
-    header: "Aksi",
+    header: "",
     cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center justify-center w-[30px]">
-          <MoreVerticalIcon />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <Link href={`/kelola-tutup/edit/${row.original.id}`}>
-            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
-          </Link>
-          <ModalDelete
-            endpoint={`master/closed/delete:${row.original.id}`}
-            queryKey="useGetTutup"
-          />
-          {/* <ModalOpen
-            endpoint={`master/closed/open:${row.original.id}`}
-            queryKey="useGetTutup"
-          /> */}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <ModalDelete
+        endpoint={`master/closed/delete/${row.original.id}`}
+        queryKey="useGetTutup"
+        icon
+      />
     ),
   },
 ];

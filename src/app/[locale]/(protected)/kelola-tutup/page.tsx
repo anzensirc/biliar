@@ -21,7 +21,7 @@ export default function TutupManajemenPage() {
   });
 
   const { data, isLoading } = useGetTutup(queryString);
-  const result = data?.data ?? []; // karena data = array langsung
+  const result = data?.data ?? [];
 
   console.log("📦 Data tutup (array):", result);
   console.log("🧾 Item pertama:", result[0]);

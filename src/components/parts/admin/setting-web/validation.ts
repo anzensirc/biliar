@@ -11,7 +11,10 @@ export const SettingFormSchema = z.object({
   deskripsi: z.string().min(1, { message: "Deskripsi tidak boleh kosong" }),
   alamat: z.string().min(1, { message: "Alamat tidak boleh kosong" }),
   kodePos: z.string().min(1, { message: "Kode Pos tidak boleh kosong" }),
-  telepon: z.array(z.string().min(1, "Nomor telepon tidak boleh kosong" )),
+  telepon: z.array(
+  z.any().refine((val) => typeof val === "string" && val.trim() !== "", {
+    message: "Nomor telepon tidak boleh kosong dan harus berupa string",
+  })),
   faks: z.string().min(1, { message: "Faks tidak boleh kosong" }),
   email: z.string().email({ message: "Email tidak valid" }),
   jamOperasional: z.string().min(1, { message: "Jam operasional tidak boleh kosong" }),

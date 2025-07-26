@@ -1,12 +1,12 @@
-import { z } from "zod"
+import { z } from "zod";
 
-export const createClosedSchema = z.object({
+export const tutupFormSchema = z.object({
   startDate: z
     .string()
     .refine((val) => !isNaN(new Date(val).getTime()), {
       message: "Tanggal tidak valid",
     }),
   reason: z.string().min(1, { message: "Alasan wajib diisi" }),
-})
+});
 
-export type closedForm = z.infer<typeof createClosedSchema>;
+export type TutupFormPayload = z.infer<typeof tutupFormSchema>;

@@ -38,8 +38,8 @@ const CreateSettingPage = () => {
       jamOperasional: "",
       kodePos: "",
       logoUrl: "",
-      sosialMedia: [],
       telepon: [],
+      sosialMedia: [],
     },
   });
 
@@ -49,7 +49,7 @@ const CreateSettingPage = () => {
     remove: removeTelepon,
   } = useFieldArray({
     control: form.control,
-    name: "sosialMedia",
+    name: "telepon",
   });
 
   const {
@@ -165,7 +165,7 @@ const CreateSettingPage = () => {
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => appendTelepon({ url: "", platform: "" })}
+                onClick={() => appendTelepon("")}
               >
                 Tambah Telepon
               </Button>

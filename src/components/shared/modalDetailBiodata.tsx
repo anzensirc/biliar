@@ -33,12 +33,10 @@ export default function ModalDetailBiodata({
           Detail
         </button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Detail Biodata & Bukti</DialogTitle>
         </DialogHeader>
-
-        {/* Biodata */}
         {biodata ? (
           <div className="grid gap-2 grid-cols-2 mb-4">
             <div>
@@ -47,8 +45,8 @@ export default function ModalDetailBiodata({
             <div>
               <strong>No. Telepon:</strong> {biodata.NoTelp}
             </div>
-            <div>
-              <strong>Alamat:</strong> {biodata.Alamat.length > 20 ? `${biodata.Alamat.substring(0, 20)}...` : biodata.Alamat}
+            <div className="break-words whitespace-pre-line">
+              <strong>Alamat:</strong> {biodata.Alamat}
             </div>
             <div>
               <strong>Email:</strong> {biodata.Email}
@@ -65,8 +63,6 @@ export default function ModalDetailBiodata({
             Data biodata tidak tersedia.
           </div>
         )}
-
-        {/* Bukti */}
         {fotoBukti ? (
           <div>
             <p className="font-semibold mb-1">Bukti Pembayaran:</p>
