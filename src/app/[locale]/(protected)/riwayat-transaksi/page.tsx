@@ -3,7 +3,6 @@
 import { useGetBooking } from "@/components/parts/admin/kelola-booking/api";
 import { riwayatallColumns } from "@/components/parts/admin/riwayat-transaksi/download";
 import { useGetAllRiwayat } from "@/components/parts/admin/riwayat-transaksi/api";
-import LinkButton from "@/components/shared/button/linkButton";
 import DataTable from "@/components/shared/dataTable";
 import Search from "@/components/shared/filter/search";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
@@ -29,31 +28,38 @@ export default function RiwayatManajemenPage() {
     delay: 200,
   });
 
+  // ✅ Ambil data ter-paginate
   const { data } = useGetBooking(queryString);
   const result = data?.data?.items ?? [];
   const itemsPerPage = Number(limit);
 
+  // ✅ Ambil seluruh data booking untuk keperluan export PDF
   const { data: allData } = useGetAllRiwayat();
 
-  const [statusFilter, setStatusFilter] = useState<
-    "all" | "confirmed" | "pending"
-  >("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "confirmed" | "pending">("all");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
     { id: "konfirmasi", value: "all" },
   ]);
 
-  const columns = useMemo(
-    () => riwayatallColumns(allData?.data ?? []),
-    [allData]
-  );
+  // ✅ Helper untuk evaluasi status konfirmasi
+  const isConfirmed = (val: any) =>
+    val === true || val === 1 || val === "1" || val === "true";
 
+  const isPending = (val: any) =>
+    val === false || val === 0 || val === "0" || val === "false" || val == null;
+
+  // ✅ Gunakan semua data untuk kolom (karena kolom `riwayatallColumns()` butuh array lengkap)
+  const columns = useMemo(() => riwayatallColumns(allData?.data ?? []), [allData]);
+
+  // ✅ Filter data paginate sesuai status
   const filteredData = useMemo(() => {
     if (statusFilter === "all") return result;
     return result.filter((item) =>
-      statusFilter === "confirmed" ? item.konfirmasi : !item.konfirmasi
+      statusFilter === "confirmed" ? isConfirmed(item.konfirmasi) : isPending(item.konfirmasi)
     );
   }, [result, statusFilter]);
 
+  // ✅ Export PDF dengan semua data (bukan hanya 1 halaman paginate)
   const exportToPDF = () => {
     const allBooking = allData?.data ?? [];
 
@@ -61,7 +67,7 @@ export default function RiwayatManajemenPage() {
       statusFilter === "all"
         ? allBooking
         : allBooking.filter((item) =>
-            statusFilter === "confirmed" ? item.konfirmasi : !item.konfirmasi
+            statusFilter === "confirmed" ? isConfirmed(item.konfirmasi) : isPending(item.konfirmasi)
           );
 
     const doc = new jsPDF();
@@ -69,28 +75,26 @@ export default function RiwayatManajemenPage() {
       head: [["ID", "Nama", "Tanggal", "Status"]],
       body: filteredForExport.map((item) => [
         item.id,
-        item.BiodataBooking?.[0]?.Nama ?? "-", // <= updated line
+        item.BiodataBooking?.[0]?.Nama ?? "-",
         item.Tanggal?.split("T")?.[0] ?? "-",
-        item.konfirmasi ? "Terkonfirmasi" : "Menunggu",
+        isConfirmed(item.konfirmasi) ? "Terkonfirmasi" : "Menunggu",
       ]),
     });
-    doc.save("laporan-booking.pdf");
+    doc.save(
+      `laporan-booking-${statusFilter === "all" ? "semua" : statusFilter}.pdf`
+    );
   };
 
   return (
     <div className="p-4">
-      <BreadcrumbSetItem
-        items={[
-          {
-            title: "Riwayat Transaksi",
-          },
-        ]}
-      />
+      <BreadcrumbSetItem items={[{ title: "Riwayat Transaksi" }]} />
       <h1 className="text-2xl font-bold mb-4">Daftar Transaksi</h1>
+
       <div className="flex flex-wrap items-center justify-between gap-2 my-5">
         <div className="flex items-center gap-2 flex-1">
           <Search name="search" />
         </div>
+
         <div className="flex items-center gap-2 flex-wrap">
           <select
             value={statusFilter}
@@ -110,7 +114,7 @@ export default function RiwayatManajemenPage() {
             onClick={exportToPDF}
             className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
           >
-            Download Semua PDF
+            Download Terfilter PDF
           </button>
         </div>
       </div>

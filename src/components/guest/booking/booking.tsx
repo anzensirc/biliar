@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ import { CustomFormInput } from "@/components/shared/forms/customFormInput";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Check, Copy } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function JadwalPage() {
   const router = useRouter();
@@ -35,6 +37,9 @@ export default function JadwalPage() {
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [isLocked, setIsLocked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const searchParams = useSearchParams();
+  const presetTipe = searchParams.get("tipe");
+  const presetNama = searchParams.get("nama");
 
   const { data, isLoading } = useGetAllJadwal();
   const { data: syaratData, isLoading: isLoadingSyarat } = useGetSyarat();
@@ -128,30 +133,89 @@ export default function JadwalPage() {
   const selectedMejaObj = mejaOptions.find((m) => m.id === selectedMeja);
   const hargaPerSlot = Number(selectedMejaObj?.Harga || 0);
   const totalHarga = hargaPerSlot * selectedSlotIds.length;
+  useEffect(() => {
+    if (!presetTipe || !presetNama || !data?.data?.length) return;
+
+    setSelectedTipe(presetTipe);
+
+    const mejaDariNama = data.data.find(
+      (item) =>
+        item.meja?.TipeMeja === presetTipe && item.meja?.NamaMeja === presetNama
+    );
+
+    if (mejaDariNama?.meja?.id) {
+      setSelectedMeja(mejaDariNama.meja.id);
+    }
+  }, [presetTipe, presetNama, data]);
   return (
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold mb-6 text-center">Booking Meja</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* KIRI: Gambar */}
-          <div className="flex justify-center">
-            {selectedMeja ? (
-              <Image
-                src={mejaOptions.find((m) => m.id === selectedMeja)?.Foto || ""}
-                alt="Foto Meja"
-                width={500}
-                height={400}
-                className="rounded shadow"
-              />
+          <div className="flex flex-col items-center">
+            {/* Card: Foto + Info Meja */}
+            {/* Card Foto + Info Meja (vertikal) */}
+            {selectedMejaObj ? (
+              <div className="w-full bg-white p-4 rounded-lg shadow space-y-4">
+                {/* Foto */}
+                <Image
+                  src={selectedMejaObj.Foto}
+                  alt={selectedMejaObj.NamaMeja}
+                  width={500}
+                  height={400}
+                  className="w-full rounded-lg object-cover aspect-video"
+                />
+
+                {/* Info Detail */}
+                <div className="space-y-2">
+                  <h2 className="text-xl font-bold text-blue-700 text-center">
+                    {selectedMejaObj.NamaMeja}
+                  </h2>
+                  <p className="text-gray-700 text-sm text-justify whitespace-pre-line">
+                    {selectedMejaObj.Deskripsi}
+                  </p>
+                  <p className="text-lg font-semibold text-green-700 text-center">
+                    Rp {Number(selectedMejaObj.Harga).toLocaleString("id-ID")} /
+                    jam
+                  </p>
+                </div>
+              </div>
             ) : (
-              // Default image jika belum memilih meja
-              <Image
-                src="/images/meja-base.jpg" // Ganti dengan path gambar default yang tersedia di public/
-                alt="Default Meja"
-                width={500}
-                height={400}
-                className="rounded shadow"
-              />
+              // Default image + deskripsi jika belum pilih meja
+              <div className="w-full bg-white p-4 rounded-lg shadow space-y-4 text-center">
+                <Image
+                  src="/images/meja-base.jpg"
+                  alt="Default Meja"
+                  width={500}
+                  height={400}
+                  className="w-full rounded-lg object-cover aspect-video"
+                />
+                <div className="text-sm text-gray-700 text-center leading-relaxed space-y-1">
+                  <p>
+                    🎱{" "}
+                    <span className="font-medium text-blue-700">
+                      Pilih tipe dan meja
+                    </span>{" "}
+                    untuk melihat detail, deskripsi, dan harga sewa di bawah
+                    ini.
+                  </p>
+                  <p>
+                    📌 Tersedia{" "}
+                    <span className="font-semibold text-green-700">
+                      2 Tipe Meja
+                    </span>{" "}
+                    — <span className="italic">Meja Kecil</span> &{" "}
+                    <span className="italic">Meja Besar</span>, harga mulai{" "}
+                    <span className="font-bold text-green-800">Rp15.000</span>{" "}
+                    hingga{" "}
+                    <span className="font-bold text-green-800">Rp20.000</span>.{" "}
+                    <span className="text-blue-600 font-semibold">
+                      Pesan sekarang!
+                    </span>
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 

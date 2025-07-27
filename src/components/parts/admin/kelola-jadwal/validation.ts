@@ -1,12 +1,10 @@
 import { z } from "zod";
 
 export const JadwalFormSchema = z.object({
-  nama: z.string().min(1, { message: "Nama produk wajib diisi" }),
-  foto: z.any(),
-  harga: z.string().min(1, { message: "Harga produk wajib diisi" }),
-  deskripsi: z.string().min(1, { message: "Stok produk wajib diisi" }),
-  noMeja: z.string().min(1, { message: "Stok produk wajib diisi" }),
-  TipeMeja: z.string().min(1, { message: "Stok produk wajib diisi" }),
+  mejaId: z.number().min(1, "Meja wajib dipilih"),
+  StartTime: z.string().min(1, "Jam mulai wajib diisi"),
+  EndTime: z.string().min(1, "Jam selesai wajib diisi"),
+  Status: z.enum(["available", "booked", "maintenance"]),
 });
 
 export type JadwalForm = z.infer<typeof JadwalFormSchema>;

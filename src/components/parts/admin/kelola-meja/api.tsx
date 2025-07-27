@@ -57,3 +57,23 @@ export const useMeja = (method: "POST" | "PUT" = "POST", id?: number) => {
         : "Data berhasil diperbarui",
   });
 };
+
+// get all meja tanpa pagination
+const getAllMeja = async (): Promise<ApiResponse<MejaResponse[]>> => {
+  const res = await fetcher("master/meja?limit=9999"); // atau sesuaikan param limit
+  return {
+    ...res,
+    data: res.data.items, // asumsikan response default-nya masih berbentuk paginate
+  };
+};
+
+export const useGetAllMeja = () => {
+  return useQuery<ApiResponse<MejaResponse[]>, Error>(
+    ["useGetAllMeja"],
+    () => getAllMeja(),
+    {
+      keepPreviousData: true,
+      refetchIntervalInBackground: true,
+    }
+  );
+};

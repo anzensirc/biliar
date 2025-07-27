@@ -97,7 +97,7 @@ export const jadwalColumns = (
           </Link>
           <ModalDelete
             endpoint={`master/jadwal-meja/delete/${row.original.id}`}
-            queryKey="useGetJadwal"
+            queryKey="useGetJadwal" 
           />
         </DropdownMenuContent>
       </DropdownMenu>

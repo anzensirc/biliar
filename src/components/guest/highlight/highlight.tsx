@@ -6,36 +6,46 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useGetMeja } from "@/components/parts/admin/kelola-meja/api";
 
-const mejaKecilDescription = `🎱 Meja Biliar Kecil ...`; // singkat biar fokus ke animasi
-const mejaBesarDescription = `🎱 Meja Biliar Besar ...`;
-
 export default function Highlight() {
   const { data, isLoading } = useGetMeja();
   const mejaList = data?.data?.items || [];
 
   const filteredTables = useMemo(() => {
-    const kecil = mejaList.find((m) => m.TipeMeja === "Meja Kecil");
-    const besar = mejaList.find((m) => m.TipeMeja === "Meja Besar");
+    const groupByType = (tipe: string) =>
+      mejaList.filter((m) => m.TipeMeja?.toLowerCase() === tipe.toLowerCase());
+
+    const mejaKecilList = groupByType("Meja Kecil");
+    const mejaBesarList = mejaList.filter((m) =>
+      ["meja besar", "besar"].includes(m.TipeMeja?.toLowerCase() || "")
+    );
 
     const tables = [];
 
-    if (kecil) {
+    if (mejaKecilList.length > 0) {
       tables.push({
-        id: kecil.id,
+        id: 1,
         name: "Meja Kecil",
-        description: mejaKecilDescription.replace(/\n/g, " "),
-        category: kecil.TipeMeja,
-        images: [kecil.Foto],
+        category: "Meja Kecil",
+        items: mejaKecilList.map((m) => ({
+          img: m.Foto,
+          desc: m.Deskripsi,
+          harga: m.Harga,
+          nama: m.NamaMeja,
+        })),
       });
     }
 
-    if (besar) {
+    if (mejaBesarList.length > 0) {
       tables.push({
-        id: besar.id,
+        id: 2,
         name: "Meja Besar",
-        description: mejaBesarDescription.replace(/\n/g, " "),
-        category: besar.TipeMeja,
-        images: [besar.Foto],
+        category: "Meja Besar",
+        items: mejaBesarList.map((m) => ({
+          img: m.Foto,
+          desc: m.Deskripsi,
+          harga: m.Harga,
+          nama: m.NamaMeja, 
+        })),
       });
     }
 
@@ -67,59 +77,82 @@ export default function Highlight() {
 type Table = {
   id: number;
   name: string;
-  description: string;
   category: string;
-  images: string[];
+  items: { img: string; desc: string; harga: string; nama: string }[];
 };
 
 function TableCard({ table }: { table: Table }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev === 0 ? table.images.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? table.items.length - 1 : prev - 1));
   };
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev === table.images.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === table.items.length - 1 ? 0 : prev + 1));
   };
+
+  const currentItem = table.items[currentIndex];
 
   return (
     <div className="bg-blue-100 rounded-xl shadow-lg p-4 flex flex-col items-center space-y-4 transition-all duration-300 hover:scale-105">
-      <div className="text-lg sm:text-xl font-semibold text-center">{table.name}</div>
+      <div className="text-lg sm:text-xl font-semibold text-center">{currentItem.nama}</div>
 
       <div className="relative w-full aspect-[4/3] rounded overflow-hidden">
         <img
-          src={table.images[currentIndex]}
-          alt={table.name}
+          src={currentItem.img}
+          alt={`${table.name} ${currentIndex + 1}`}
           className="w-full h-full object-cover transition-opacity duration-500"
         />
-        <button
-          onClick={prevImage}
-          className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
-        >
-          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
-        <button
-          onClick={nextImage}
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
-        >
-          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
+        {table.items.length > 1 && (
+          <>
+            <button
+              onClick={prevImage}
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+            <button
+              onClick={nextImage}
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black rounded-full p-1 shadow transition-transform hover:scale-110"
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+          </>
+        )}
       </div>
 
-      <Link
-        href={`/booking?category=${encodeURIComponent(table.category)}`}
-        className="bg-blue-500 hover:bg-green-500 text-white text-sm sm:text-base px-4 py-2 rounded transition-all duration-300"
-      >
-        Lihat Jadwal
-      </Link>
+      {table.items.length > 1 && (
+        <div className="flex gap-1 justify-center mt-2">
+          {table.items.map((_, idx) => (
+            <div
+              key={idx}
+              className={`w-2 h-2 rounded-full ${
+                currentIndex === idx ? "bg-blue-600" : "bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="w-full bg-white p-4 rounded text-sm sm:text-base text-justify transition-all duration-300">
-        <h3 className="font-semibold mb-2">Deskripsi:</h3>
-        <p>{table.description}</p>
+<Link
+  href={`/booking?tipe=${encodeURIComponent(table.category)}&nama=${encodeURIComponent(currentItem.nama)}`}
+  className="bg-blue-500 hover:bg-green-500 text-white text-sm sm:text-base px-4 py-2 rounded transition-all duration-300"
+>
+  Lihat Jadwal
+</Link>
+
+
+      <div className="w-full bg-white p-4 rounded text-sm sm:text-base text-justify transition-all duration-300 space-y-3">
+        <div>
+          <h3 className="font-bold mb-1">Harga:</h3>
+          <p className="font-bold">Rp {Number(currentItem.harga).toLocaleString("id-ID")}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-1">Deskripsi:</h3>
+          <p>{currentItem.desc}</p>
+        </div>
       </div>
     </div>
   );
 }
-
-/* Tambahkan style animasi manual ke tailwind */
