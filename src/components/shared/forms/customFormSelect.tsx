@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 export interface SelectOption {
-  value: string;
+  value: string | number;
   label: string;
 }
 
@@ -62,32 +62,31 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
           )}
           <Select
             key={field.value}
-            value={field.value}
+            value={String(field.value ?? "")}
             onValueChange={(value) => {
-              field.onChange(value);
+              field.onChange(isNaN(Number(value)) ? value : Number(value));
               onValueChange?.(value);
             }}
             disabled={disabled}
           >
             <FormControl>
               <SelectTrigger className="bg-card rounded-full">
-                <SelectValue
-                  placeholder={placeholder}
-                  defaultValue={field.value}
-                >
-                  {options.find((opt) => opt.value === field.value)?.label}
+                <SelectValue placeholder={placeholder}>
+                  {
+                    options.find(
+                      (opt) => String(opt.value) === String(field.value)
+                    )?.label
+                  }
                 </SelectValue>
               </SelectTrigger>
             </FormControl>
             <SelectContent>
               {options.length > 0 ? (
-                options.map((option) => {
-                  return (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  );
-                })
+                options.map((option) => (
+                  <SelectItem key={option.value} value={String(option.value)}>
+                    {option.label}
+                  </SelectItem>
+                ))
               ) : (
                 <SelectItem value="empty" disabled>
                   Tidak ada opsi tersedia

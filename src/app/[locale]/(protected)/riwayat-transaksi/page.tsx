@@ -9,11 +9,11 @@ import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import useQueryBuilder from "@/hooks/useQueryBuilder";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ColumnFiltersState } from "@tanstack/react-table";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export default function RiwayatManajemenPage() {
+  const [loadingExport, setLoadingExport] = useState(false);
   const searchParams = useSearchParams();
   const limit = searchParams.get("limit") || "10";
   const page = searchParams.get("page") || "1";
@@ -28,61 +28,101 @@ export default function RiwayatManajemenPage() {
     delay: 200,
   });
 
-  // ✅ Ambil data ter-paginate
   const { data } = useGetBooking(queryString);
   const result = data?.data?.items ?? [];
   const itemsPerPage = Number(limit);
 
-  // ✅ Ambil seluruh data booking untuk keperluan export PDF
   const { data: allData } = useGetAllRiwayat();
 
-  const [statusFilter, setStatusFilter] = useState<"all" | "confirmed" | "pending">("all");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-    { id: "konfirmasi", value: "all" },
-  ]);
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "confirmed" | "pending"
+  >("all");
 
-  // ✅ Helper untuk evaluasi status konfirmasi
   const isConfirmed = (val: any) =>
     val === true || val === 1 || val === "1" || val === "true";
 
   const isPending = (val: any) =>
     val === false || val === 0 || val === "0" || val === "false" || val == null;
 
-  // ✅ Gunakan semua data untuk kolom (karena kolom `riwayatallColumns()` butuh array lengkap)
-  const columns = useMemo(() => riwayatallColumns(allData?.data ?? []), [allData]);
+  const columns = useMemo(
+    () => riwayatallColumns(allData?.data ?? []),
+    [allData]
+  );
 
-  // ✅ Filter data paginate sesuai status
   const filteredData = useMemo(() => {
     if (statusFilter === "all") return result;
     return result.filter((item) =>
-      statusFilter === "confirmed" ? isConfirmed(item.konfirmasi) : isPending(item.konfirmasi)
+      statusFilter === "confirmed"
+        ? isConfirmed(item.konfirmasi)
+        : isPending(item.konfirmasi)
     );
   }, [result, statusFilter]);
 
-  // ✅ Export PDF dengan semua data (bukan hanya 1 halaman paginate)
-  const exportToPDF = () => {
+  const exportToPDF = async () => {
+    setLoadingExport(true);
+
     const allBooking = allData?.data ?? [];
 
     const filteredForExport =
       statusFilter === "all"
         ? allBooking
         : allBooking.filter((item) =>
-            statusFilter === "confirmed" ? isConfirmed(item.konfirmasi) : isPending(item.konfirmasi)
+            statusFilter === "confirmed"
+              ? isConfirmed(item.konfirmasi)
+              : isPending(item.konfirmasi)
           );
 
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: "landscape" });
+
     autoTable(doc, {
-      head: [["ID", "Nama", "Tanggal", "Status"]],
-      body: filteredForExport.map((item) => [
-        item.id,
-        item.BiodataBooking?.[0]?.Nama ?? "-",
-        item.Tanggal?.split("T")?.[0] ?? "-",
-        isConfirmed(item.konfirmasi) ? "Terkonfirmasi" : "Menunggu",
-      ]),
+      head: [
+        [
+          "Kode Booking",
+          "Nama Meja",
+          "Tanggal",
+          "Jam Booking",
+          "Durasi (jam)",
+          "Total Bayar",
+          "Status",
+        ],
+      ],
+      body: filteredForExport.map((item) => {
+        const namaMeja = item?.meja?.NamaMeja ?? "-";
+        const tanggal = item.Tanggal?.split("T")[0] ?? "-";
+        const jamBooking = item.JamBooking?.map((jb) => {
+          const start = jb.JadwalMeja?.StartTime ?? "-";
+          const end = jb.JadwalMeja?.EndTime ?? "-";
+          return `${start}-${end}`;
+        }).join(", ");
+
+        return [
+          item.KodeBooking ?? "-",
+          namaMeja,
+          tanggal,
+          jamBooking,
+          item.durasiJam ?? "-",
+          `Rp ${item.totalBayar?.toLocaleString("id-ID") ?? "-"}`,
+          isConfirmed(item.konfirmasi) ? "Terkonfirmasi" : "Menunggu",
+        ];
+      }),
+      theme: "grid",
+      styles: {
+        fontSize: 10,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [255, 193, 7],
+        textColor: 40,
+        halign: "center",
+        fontStyle: "bold",
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
     });
-    doc.save(
-      `laporan-booking-${statusFilter === "all" ? "semua" : statusFilter}.pdf`
-    );
+
+    doc.save(`laporan-booking-${statusFilter}.pdf`);
+    setLoadingExport(false);
   };
 
   return (
@@ -101,7 +141,6 @@ export default function RiwayatManajemenPage() {
             onChange={(e) => {
               const val = e.target.value as "all" | "confirmed" | "pending";
               setStatusFilter(val);
-              setColumnFilters([{ id: "konfirmasi", value: val }]);
             }}
             className="px-5 py-2.5 rounded-md bg-yellow-500 text-white text-sm font-semibold shadow-sm hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
           >

@@ -1,57 +1,45 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/sections/landing/modeToggle";
-import { LangSwitcher } from "./langSwitcher";
+import Image from "next/image";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background">
-      <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
-        <div className="flex gap-6 md:gap-10">
-          <Link href="/#hero" className="flex items-center space-x-2">
-            <span className="inline-block font-bold">NextCore</span>
+    <header className="sticky top-0 z-50 w-full bg-[#00819B] text-white shadow-md">
+      <div className="container flex h-16 items-center justify-between px-4">
+        {/* Logo + Brand */}
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/icons/logo-dongan.png"
+            alt="Dongans Logo"
+            width={32}
+            height={32}
+            className="rounded"
+          />
+          <span className="text-xl font-bold tracking-wide text-white hover:text-[#FFD700] transition-colors">
+            Dongans Billiard
+          </span>
+        </Link>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link
+            href="/"
+            className="text-sm hover:text-[#FFD700] transition-colors"
+          >
+            Beranda
           </Link>
-          <nav className="hidden gap-6 md:flex">
-            <Link
-              href="/#features"
-              className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Fitur
-            </Link>
-            <Link
-              href="/#testimonials"
-              className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Testimoni
-            </Link>
-            <Link
-              href="/#pricing"
-              className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Harga
-            </Link>
-            <Link
-              href="/#guide"
-              className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Panduan
-            </Link>
-          </nav>
-        </div>
-        <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-2">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">
-                Masuk
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm">Daftar</Button>
-            </Link>
-            <ModeToggle />
-            <LangSwitcher />
-          </nav>
-        </div>
+          <Link
+            href="/tentang"
+            className="text-sm hover:text-[#FFD700] transition-colors"
+          >
+            Tentang
+          </Link>
+          <a
+            href="https://maps.app.goo.gl/8xGD1b5MM5WYrbVj7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm hover:text-[#FFD700] transition-colors"
+          >
+            Lokasi
+          </a>
+        </nav>
       </div>
     </header>
   );

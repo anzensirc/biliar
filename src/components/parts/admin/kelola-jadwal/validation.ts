@@ -8,3 +8,4 @@ export const JadwalFormSchema = z.object({
 });
 
 export type JadwalForm = z.infer<typeof JadwalFormSchema>;
+  

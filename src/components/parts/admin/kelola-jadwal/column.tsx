@@ -44,10 +44,10 @@ export const jadwalColumns = (
   {
     accessorKey: "meja.NamaMeja",
     header: "Nama Meja",
-    cell: ({ row }) => row.original.meja.NamaMeja,
+    cell: ({ row }) => row.original.meja?.NamaMeja ?? "-",
   },
   {
-    accessorKey: "",
+    accessorKey: "meja.TipeMeja",
     header: "Tipe Meja",
     cell: ({ row }) => row.original.meja.TipeMeja,
   },
@@ -71,12 +71,20 @@ export const jadwalColumns = (
   {
     accessorKey: "Start Time",
     header: "Jam Awal",
-    cell: ({ row }) => row.original.StartTime,
+    cell: ({ row }) =>
+      new Date(row.original.StartTime).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
   },
   {
     accessorKey: "End Time",
     header: "Jadwal Akhir",
-    cell: ({ row }) => row.original.EndTime,
+    cell: ({ row }) =>
+      new Date(row.original.EndTime).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
   },
   {
     accessorKey: "Status",
@@ -97,7 +105,7 @@ export const jadwalColumns = (
           </Link>
           <ModalDelete
             endpoint={`master/jadwal-meja/delete/${row.original.id}`}
-            queryKey="useGetJadwal" 
+            queryKey="useGetJadwal"
           />
         </DropdownMenuContent>
       </DropdownMenu>

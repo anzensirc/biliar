@@ -7,7 +7,7 @@ import DataTable from "@/components/shared/dataTable";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import useQueryBuilder from "@/hooks/useQueryBuilder";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export default function JadwalGetPage() {
   const searchParams = useSearchParams();
@@ -18,20 +18,50 @@ export default function JadwalGetPage() {
   const [tipeMeja, setTipeMeja] = useState("");
   const [namaMeja, setNamaMeja] = useState("");
 
-  // 🔧 Bangun query string yang sesuai dengan API
   const queryString = useQueryBuilder({
     dataFilter: [
       { key: "page", value: page },
       { key: "limit", value: limit },
       { key: "search", value: search },
-      ...(tipeMeja ? [{ key: "tipeMeja", value: tipeMeja }] : []),
-      ...(namaMeja ? [{ key: "namaMeja", value: namaMeja }] : []),
     ],
     delay: 200,
   });
 
   const { data } = useGetJadwal(queryString);
   const result = data?.data?.items ?? [];
+  const originalResult = data?.data?.items ?? [];
+
+  // Filter manual berdasarkan tipeMeja dan namaMeja
+  const filteredResult = useMemo(() => {
+    return originalResult.filter((item) => {
+      const cocokTipe = tipeMeja ? item.meja?.TipeMeja === tipeMeja : true;
+      const cocokNama = namaMeja ? item.meja?.NamaMeja === namaMeja : true;
+      return cocokTipe && cocokNama;
+    });
+  }, [originalResult, tipeMeja, namaMeja]);
+
+  // Reset namaMeja jika tidak cocok dengan tipeMeja saat tipeMeja berubah
+  useEffect(() => {
+    const selectedMeja = result.find(
+      (item) => item.meja?.NamaMeja === namaMeja
+    );
+    if (selectedMeja && tipeMeja && selectedMeja.meja?.TipeMeja !== tipeMeja) {
+      setNamaMeja("");
+    }
+  }, [tipeMeja, namaMeja, result]);
+
+  // Ambil daftar nama meja sesuai tipe yang dipilih (atau semua jika tipe kosong)
+  const namaMejaOptions = useMemo(() => {
+    return [
+      ...new Set(
+        originalResult
+          .filter((item) =>
+            tipeMeja ? item.meja?.TipeMeja === tipeMeja : true
+          )
+          .map((item) => item.meja?.NamaMeja)
+      ),
+    ];
+  }, [originalResult, tipeMeja]);
 
   return (
     <div className="p-4">
@@ -42,6 +72,7 @@ export default function JadwalGetPage() {
       <div className="flex flex-wrap justify-between items-end gap-4 mb-6">
         <LinkButton title="Tambah Jadwal" link="/kelola-jadwal/create" />
         <div className="flex gap-4 flex-wrap">
+          {/* Filter Tipe Meja */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Filter Tipe Meja
@@ -57,6 +88,7 @@ export default function JadwalGetPage() {
             </select>
           </div>
 
+          {/* Filter Nama Meja */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Filter Nama Meja
@@ -67,7 +99,7 @@ export default function JadwalGetPage() {
               className="px-3 py-2 rounded-md bg-yellow-500 text-white text-sm font-semibold shadow-sm hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300"
             >
               <option value="">Semua</option>
-              {[...new Set(result.map((item) => item.meja.NamaMeja))].map((nama) => (
+              {namaMejaOptions.map((nama) => (
                 <option key={nama} value={nama}>
                   {nama}
                 </option>
@@ -77,12 +109,12 @@ export default function JadwalGetPage() {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Tabel */}
       <DataTable
         columns={jadwalColumns(data?.data?.page ?? 1, Number(limit))}
-        data={result}
+        data={filteredResult}
         currentPage={data?.data?.page ?? 1}
-        totalItems={data?.data?.total_items ?? 0}
+        totalItems={data?.data?.total_items ?? filteredResult.length}
         itemsPerPage={Number(limit)}
         totalPages={data?.data?.total_pages ?? 1}
       />

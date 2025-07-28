@@ -10,7 +10,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useGetSyarat } from "@/components/parts/admin/syarat-ketentuan/api";
 import { useGetAllJadwal } from "@/components/parts/admin/kelola-jadwal/api";
 import { useGetTutup } from "@/components/parts/admin/kelola-tutup/api";
-import { useBooking } from "@/components/parts/admin/kelola-booking/api";
+import {
+  useBooking,
+  useGetBooking,
+} from "@/components/parts/admin/kelola-booking/api";
 import { useBiodata } from "@/components/parts/admin/kelola-biodata/api";
 import {
   useGetQris,
@@ -44,6 +47,7 @@ export default function JadwalPage() {
 
   const { data, isLoading } = useGetAllJadwal();
   const { data: dataTutup } = useGetTutup();
+  const { data: bookingData } = useGetBooking();
   const { data: syaratData, isLoading: isLoadingSyarat } = useGetSyarat();
   const { mutate: createBooking } = useBooking("POST");
   const { mutate: createBiodata } = useBiodata("POST");
@@ -160,7 +164,19 @@ export default function JadwalPage() {
       )
       .map((t) => new Date(t.date).toISOString().split("T")[0]) ?? [];
 
-  const isDateClosed = tanggalTutupList.includes(selectedDate);
+  const isPastDate =
+    new Date(selectedDate) < new Date(new Date().toDateString());
+  const isDateClosed = isPastDate || tanggalTutupList.includes(selectedDate);
+
+  const bookedSlotIds =
+    bookingData?.data?.items
+      .filter((item) => {
+        return (
+          item.Tanggal.split("T")[0] === selectedDate &&
+          item.mejaId === selectedMeja
+        );
+      })
+      .flatMap((item) => item.JamBooking.map((jb) => jb.idJadwalMeja)) ?? [];
 
   return (
     <div className="p-6">
@@ -277,6 +293,8 @@ export default function JadwalPage() {
                 type="date"
                 className="border p-2 rounded bg-blue-400 hover:bg-blue-500 text-white"
                 value={selectedDate}
+                min={new Date().toISOString().split("T")[0]} 
+                // batas minimal = hari ini
                 disabled={isLocked}
                 onChange={(e) => setSelectedDate(e.target.value)}
               />
@@ -293,14 +311,23 @@ export default function JadwalPage() {
                       const isAvailable =
                         jadwal.Status?.toLowerCase() === "available";
                       const isSelected = selectedSlotIds.includes(jadwal.id);
+                      const isBooked = bookedSlotIds.includes(jadwal.id);
 
                       const jadwalClass = isDateClosed
                         ? "bg-red-100 text-red-500 cursor-not-allowed"
-                        : !isAvailable
+                        : !isAvailable || isBooked
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                           : isSelected
                             ? "bg-green-300 ring-2 ring-green-600"
                             : "bg-white hover:bg-green-100";
+
+                      const keteranganSlot = isDateClosed
+                        ? "Tutup"
+                        : isBooked
+                          ? "Sudah Dibooking"
+                          : !isAvailable
+                            ? "Penuh / Dipesan"
+                            : "Tersedia";
 
                       return (
                         <button
@@ -308,10 +335,13 @@ export default function JadwalPage() {
                           onClick={() =>
                             !isDateClosed &&
                             isAvailable &&
+                            !isBooked &&
                             handleSlotClick(jadwal.id)
                           }
+                          disabled={
+                            !isAvailable || isLocked || isDateClosed || isBooked
+                          }
                           className={`w-full p-4 h-24 border rounded-lg transition text-base text-left ${jadwalClass}`}
-                          disabled={!isAvailable || isLocked || isDateClosed}
                         >
                           <div className="flex flex-col text-sm">
                             <span>
@@ -327,11 +357,7 @@ export default function JadwalPage() {
                               {jadwal.StartTime} - {jadwal.EndTime}
                             </span>
                             <span className="text-xs text-gray-500">
-                              {isDateClosed
-                                ? "Tutup"
-                                : isAvailable
-                                  ? "Tersedia"
-                                  : "Penuh / Dipesan"}
+                              {keteranganSlot}
                             </span>
                           </div>
                         </button>

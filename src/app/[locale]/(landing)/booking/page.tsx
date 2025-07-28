@@ -1,4 +1,4 @@
-import Booking from "@/components/guest/booking/booking";
+import Booking from "@/components/guest/booking/booking1";
 import Navbar from "@/components/guest/common/navbar";
 import Footer from "@/components/guest/common/footer";
 export default function Home() {

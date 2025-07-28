@@ -45,7 +45,7 @@ export const useJadwal = (method: "POST" | "PUT" = "POST", id?: number) => {
       const endpoint =
         method === "PUT" && id
           ? `master/jadwal-meja/update/${id}` // ✅ endpoint update
-          : "master/jadwal-meja"; // ✅ endpoint create
+          : "master/jadwal-meja/create"; // ✅ endpoint create
       const delay = new Promise((resolve) => setTimeout(resolve, 2000));
       const response: ApiResponse<JadwalMeja> = await sendData(
         endpoint,

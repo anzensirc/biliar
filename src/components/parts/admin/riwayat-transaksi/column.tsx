@@ -34,19 +34,22 @@ export const riwayatColumns = (
     header: "Tanggal Booking",
     cell: ({ row }) => `${row.original.Tanggal.split("T")[0]}`,
   },
-  {
-    accessorKey: "Jam Main",
-    header: "Jam Main",
-    cell: ({ row }) => (
-      <div className="flex flex-wrap gap-2 items-center">
-        {row.original.JamBooking.map((item, i) => (
-          <span key={i} className="p-2 rounded-md bg-gray-50">
-            {item.JadwalMeja.StartTime}-{item.JadwalMeja.EndTime}
-          </span>
-        ))}
-      </div>
-    ),
-  },
+{
+  accessorKey: "Jam Main",
+  header: "Jam Main",
+  cell: ({ row }) => (
+    <div className="grid grid-cols-3 gap-1 max-w-xs">
+      {row.original.JamBooking.map((item, i) => (
+        <span
+          key={i}
+          className="p-1 text-xs text-center bg-gray-100 rounded"
+        >
+          {item.JadwalMeja.StartTime}-{item.JadwalMeja.EndTime}
+        </span>
+      ))}
+    </div>
+  ),
+},
   {
     accessorKey: "durasiJam",
     header: "Durasi Jam",

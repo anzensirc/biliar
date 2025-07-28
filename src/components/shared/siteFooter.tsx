@@ -2,31 +2,29 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="w-full border-t bg-background">
-      <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} NextCore. Hak Cipta Dilindungi.
+    <footer className="w-full bg-[#FFFBE5] border-t border-[#D1AC3B] text-[#00819B]">
+      <div className="container flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-6">
+        <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
+          <p className="text-sm text-[#00819B] font-semibold">
+            &copy; {new Date().getFullYear()} Dongans Billiard
           </p>
+          <p className="text-xs text-[#00819B]">
+            Dikembangkan oleh Developer
+          </p>  
         </div>
-        <div className="flex gap-4">
+
+        <div className="flex gap-4 text-sm font-medium">
           <Link
-            href="/terms"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            href="/"
+            className="hover:text-[#FFD700] transition-colors"
           >
-            Ketentuan
+            Beranda
           </Link>
           <Link
-            href="/privacy"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            href="/tentang"
+            className="hover:text-[#FFD700] transition-colors"
           >
-            Privasi
-          </Link>
-          <Link
-            href="/contact"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Kontak
+            Tentang
           </Link>
         </div>
       </div>

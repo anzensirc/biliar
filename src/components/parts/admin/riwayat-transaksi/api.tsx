@@ -64,7 +64,7 @@ export const useBooking = (method: "POST" | "PUT" = "POST", id?: number) => {
 };
 
 const getAllRiwayat = async (): Promise<ApiResponse<BookingResponse[]>> => {
-  const res = await fetcher("master/jadwal-meja?limit=9999");
+  const res = await fetcher("master/booking?limit=9999");
   return {
     ...res,
     data: res.data.items,
