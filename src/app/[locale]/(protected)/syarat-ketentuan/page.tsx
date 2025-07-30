@@ -70,7 +70,8 @@ export default function SyaratManajemenPage() {
       <div
         className="p-4 rounded-md bg-blue-400 shadow-md text-justify"
         dangerouslySetInnerHTML={{
-          __html: (data?.data?.syarat ?? "-").replace(/\n/g, "<br />"),
+          __html: (data?.data?.syarat ?? "-").replace(/\n/g, "<br />"), //sanitize input atau dangrouslySetInnerHTML
+          // pastikan untuk menghindari XSS dengan sanitasi input, XSS NPM package bisa digunakan
         }}
       />
 
